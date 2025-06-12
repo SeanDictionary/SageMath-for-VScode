@@ -1,0 +1,34 @@
+{
+    "name": "sagemath-for-vscode",
+    "displayName": "SageMath for VScode",
+    "description": "An extension for SageMath support in VS Code. Includes highighting and run",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.100.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "sagemath",
+                "aliases": [
+                    "SageMath",
+                    "sagemath"
+                ],
+                "extensions": [
+                    ".sage"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "sagemath",
+                "scopeName": "source.sagemath",
+                "path": "./syntaxes/sagemath.tmLanguage.json"
+            }
+        ]
+    }
+}
