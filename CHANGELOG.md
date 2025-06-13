@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 -   Initial release
+-   Support basic partly syntax highlighting for SageMath
 -   Add hotkey for line comment and block comment
 -   Add command to run SageMath
 -   Bind F5 to run SageMath
