@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
-    vscode.window.showInformationMessage('Activating SageMath for VSCode...');  // Test for activation
+    // vscode.window.showInformationMessage('Activating SageMath for VSCode...');  // Test for activation
 
     let runSageMathCommand = vscode.commands.registerCommand('sagemath-for-vscode.runSageMath', async () => {
         const editor = vscode.window.activeTextEditor;
