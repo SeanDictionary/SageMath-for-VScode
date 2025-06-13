@@ -3,32 +3,51 @@
     "name": "SageMath",
     "scopeName": "source.sagemath",
     "fileTypes": ["sage"],
-    "firstLineMatch": "^\\s*from\\s+Sage\\b",
+    "firstLineMatch": "^(\\s*from\\s+Sage\\.?)|#\\s*Sage(Math)?\\b",
     "patterns": [
         {
-            "include": "#keywords"
+            "include": "#comments"
         },
         {
-            "include": "#strings"
+            "include": "source.python"
         }
     ],
     "repository": {
-        "keywords": {
+        "comments": {
             "patterns": [
                 {
-                    "name": "keyword.control.sagemath",
-                    "match": "\\b(if|while|for|return)\\b"
-                }
-            ]
-        },
-        "strings": {
-            "name": "string.quoted.double.sagemath",
-            "begin": "\"",
-            "end": "\"",
-            "patterns": [
+                    "name": "comment.line.number-sign.sagemath",
+                    "match": "#.*$"
+                },
                 {
-                    "name": "constant.character.escape.sagemath",
-                    "match": "\\\\."
+                    "begin": "'''",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.comment.begin.sagemath"
+                        }
+                    },
+                    "end": "'''",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.comment.end.sagemath"
+                        }
+                    },
+                    "name": "string.quoted.docstring.multi.sagemath"
+                },
+                {
+                    "begin": "\"\"\"",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.comment.begin.sagemath"
+                        }
+                    },
+                    "end": "\"\"\"",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.comment.end.sagemath"
+                        }
+                    },
+                    "name": "string.quoted.docstring.multi.sagemath"
                 }
             ]
         }

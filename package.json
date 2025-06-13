@@ -7,15 +7,20 @@
         "vscode": "^1.100.0"
     },
     "categories": [
-        "Programming Languages"
+        "Programming Languages",
+        "Extension Packs",
+        "Debuggers"
     ],
+    "main": "./out/extension.js",
     "contributes": {
         "languages": [
             {
                 "id": "sagemath",
                 "aliases": [
                     "SageMath",
-                    "sagemath"
+                    "sagemath",
+                    "Sage",
+                    "sage"
                 ],
                 "extensions": [
                     ".sage"
@@ -29,6 +34,50 @@
                 "scopeName": "source.sagemath",
                 "path": "./syntaxes/sagemath.tmLanguage.json"
             }
-        ]
+        ],
+        "commands": [
+            {
+                "command": "sagemath-for-vscode.runSageMath",
+                "title": "SageMath for VScode: Run SageMath File",
+                "icon": "$(play-circle)"
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "sagemath-for-vscode.runSageMath",
+                "key": "F5",
+                "when": "editorTextFocus && editorLangId == 'sagemath'"
+            }
+        ],
+        "configuration": {
+            "properties": {
+                "sagemath-for-vscode.path": {
+                    "type": "string",
+                    "default": "sage",
+                    "description": "Path to the SageMath executable"
+                }
+            }
+        },
+        "menus": {
+            "editor/title": [
+                {
+                    "command": "sagemath-for-vscode.runSageMath",
+                    "when": "resourceLangId == sagemath",
+                    "group": "navigation"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/node": "24.0.1",
+        "@types/vscode": "^1.100.0",
+        "vscode-debugadapter": "^1.51.0",
+        "vscode-debugprotocol": "^1.51.0"
     }
 }

@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Todo
-
-- Add highlighting
-- Add F5 key to run code
-
 ### Added
 
-- Initial release
+-   Initial release
+-   Add hotkey for line comment and block comment
+-   Add command to run SageMath
+-   Bind F5 to run SageMath
+-   Add button to run SageMath in the status bar
+-   Add settings to configure SageMath path
