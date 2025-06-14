@@ -1,5 +1,6 @@
 node_modules
 *.vsix
 .env
+out
 notebook.md
 *.tmLanguage.json
