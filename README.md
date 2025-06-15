@@ -1,65 +1,49 @@
-# sagemath README
+# SageMath For VScode
 
-This is the README for your extension "sagemath". After writing up a brief description, we recommend including the following sections.
+![Release](https://img.shields.io/github/v/release/SeanDictionary/SageMath-for-VScode) ![Platform](https://img.shields.io/badge/platform-Linux-green) ![License](https://img.shields.io/github/license/SeanDictionary/SageMath-for-VScode) ![GitHub top language](https://img.shields.io/github/languages/top/SeanDictionary/SageMath-for-VScode) ![GitHub last commit](https://img.shields.io/github/last-commit/SeanDictionary/SageMath-for-VScode)
+
+<div align="center">English | <a href="./readmes/README-zh-CN.md">中文</a></div>
+
+## What is this?
+
+It's a extension for [SageMath](https://www.sagemath.org/) that provides syntax highlighting, code execution, and other features for Visual Studio Code.
+
+I wish to make it a full-featured SageMath extension, especially for SageMath's LSP (Language Server Protocol) support. But obviously it'll be a hard work. Welcome to contribute and suggest!
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+-   Syntax highlighting for SageMath code
+-   ~~Semantic highlighting for SageMath code~~ Not supported yet
+-   Support F5, command and buttom to run SageMath file
+-   Support hotkey for line comment and block comment
 
-For example if there is an image subfolder under your extension project workspace:
+## Chagelog
 
-\!\[feature X\]\(images/feature-x.png\)
+See [CHANGELOG.md](./CHANGELOG.md) for details.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## Usage
 
-## Requirements
+The extension **isn't released** on the Visual Studio Code Marketplace yet, so you need to download it from github and install personaly.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+### From GitHub
 
-## Extension Settings
+1. Download the latest pre-release or release from the [Releases page](https://github.com/SeanDictionary/SageMath-for-VScode/releases)
+2. Open path `~/.vscode/extensions/` in your file manager.
+3. Extract the downloaded file to this directory.
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+### ~~From VScode Marketplace~~ Not supported yet
 
-For example:
+1. Open Visual Studio Code
+2. Go to Extensions view by clicking on the Extensions icon in the Activity Bar on the side of the window or pressing `Ctrl+Shift+X`.
+3. Search for "SageMath for VScode"
+4. Click on the "Install" button for the extension named "SageMath for VScode" by SeanDictionary.
+5. After installation, you may need to reload the window or restart Visual Studio Code for the extension to take effect.
+6. Open a SageMath file (with `.sage` extension) to start using the extension.
 
-This extension contributes the following settings:
+## Contributes
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+If you want to contribute to this project, you can fork the repository and create a pull request. You can also report issues or suggest features by opening an issue on the GitHub repository.
 
-## Known Issues
+## License
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+This project is licensed under the AGPL-3.0 License. See the [LICENSE](./LICENSE) file for details.

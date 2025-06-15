@@ -3,6 +3,12 @@
     "displayName": "SageMath for VScode",
     "description": "An extension for SageMath support in VS Code. Includes highighting and run",
     "version": "0.0.1",
+    "publisher": "SeanDictionary",
+    "license": "AGPL-3.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SeanDictionary/SageMath-for-VScode.git"
+    },
     "engines": {
         "vscode": "^1.100.0"
     },
