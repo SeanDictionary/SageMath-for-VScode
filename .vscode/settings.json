@@ -162,5 +162,6 @@
         "textMateThemeToken.constant.other.option": "#569cd6",
         "textMateThemeToken.constant.character.escape": "#d7ba7d",
         "textMateThemeToken.entity.name.label": "#C8C8C8"
-    }
+    },
+    "typescript.tsdk": "node_modules\\typescript\\lib"
 }

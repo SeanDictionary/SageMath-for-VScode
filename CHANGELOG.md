@@ -9,7 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--   None yet
+-   Command: restart LSP
+-   Add tiny logging package in utils
+-   Add settings to configure LSP log level
+-   Add support for real-time LSP log level switching
 
 ## [0.0.1] - 2025-06-13
 

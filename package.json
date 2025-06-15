@@ -39,7 +39,12 @@
             {
                 "command": "sagemath-for-vscode.runSageMath",
                 "title": "SageMath for VScode: Run SageMath File",
-                "icon": "$(play-circle)"
+                "icon": "$(play)"
+            },
+            {
+                "command": "sagemath-for-vscode.restartLSP",
+                "title": "SageMath for VScode: Restart SageMath LSP",
+                "icon": "$(sync)"
             }
         ],
         "keybindings": [
@@ -50,11 +55,25 @@
             }
         ],
         "configuration": {
+            "title": "SageMath for VScode",
             "properties": {
                 "sagemath-for-vscode.path": {
+                    "title": "SageMath Executable Path",
                     "type": "string",
                     "default": "sage",
-                    "description": "Path to the SageMath executable"
+                    "markdownDescription": "Path to the SageMath executable"
+                },
+                "sagemath-for-vscode.LSPLogLevel": {
+                    "title": "SageMath LSP Log Level",
+                    "type": "string",
+                    "enum": [
+                        "error",
+                        "warn",
+                        "info",
+                        "debug"
+                    ],
+                    "default": "info",
+                    "markdownDescription": "Log level for the SageMath Language Server Protocol.<br>If you change this, you need to use the command `SageMath for VScode: Restart SageMath LSP` to apply the changes.<br>Or you can press the button `Restart LSP` to restart the LSP."
                 }
             }
         },
@@ -66,6 +85,14 @@
                     "group": "navigation"
                 }
             ]
+        },
+        "configurationDefaults": {
+            "[sagemath]": {
+                "editor.tabSize": 4,
+                "editor.insertSpaces": true,
+                "editor.suggest.insertMode": "replace",
+                "editor.semanticHighlighting.enabled": true
+            }
         }
     },
     "scripts": {
@@ -75,9 +102,9 @@
         "test": "node ./out/test/runTest.js"
     },
     "devDependencies": {
-        "@types/node": "24.0.1",
+        "@types/node": "^24.0.1",
         "@types/vscode": "^1.100.0",
-        "vscode-debugadapter": "^1.51.0",
-        "vscode-debugprotocol": "^1.51.0"
+        "vscode-languageclient": "^9.0.1",
+        "typescript": "~5.3.0"
     }
 }

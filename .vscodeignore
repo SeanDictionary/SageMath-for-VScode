@@ -1,5 +1,6 @@
 .vscode/**
 .vscode-test/**
 .gitignore
+server/__pycache__
 notebook.md
 *.tmLanguage.json
