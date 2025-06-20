@@ -69,7 +69,13 @@
                     "default": "sage",
                     "markdownDescription": "Path to the SageMath executable"
                 },
-                "sagemath-for-vscode.LSPLogLevel": {
+                "sagemath-for-vscode.LSP.useSageMathLSP": {
+                    "title": "Use SageMath Language Server Protocol",
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Enable or disable the SageMath Language Server Protocol.\n\nIt will take effect after restarting the editor."
+                },
+                "sagemath-for-vscode.LSP.LSPLogLevel": {
                     "title": "SageMath LSP Log Level",
                     "type": "string",
                     "enum": [
@@ -78,8 +84,14 @@
                         "info",
                         "debug"
                     ],
+                    "enumDescriptions": [
+                        "Log only errors.",
+                        "Log warnings and errors.",
+                        "Log informational messages, warnings, and errors.",
+                        "Log debug messages, informational messages, warnings, and errors."
+                    ],
                     "default": "info",
-                    "markdownDescription": "Log level for the SageMath Language Server Protocol.<br>If you change this, you need to use the command `SageMath for VScode: Restart SageMath LSP` to apply the changes.<br>Or you can press the button `Restart LSP` to restart the LSP."
+                    "markdownDescription": "Log level for the SageMath Language Server Protocol."
                 }
             }
         },

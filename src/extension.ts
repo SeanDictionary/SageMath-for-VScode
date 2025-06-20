@@ -47,51 +47,59 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(runSageMathCommand);
 
-    // LSP setup
-    const serverModule = context.asAbsolutePath(path.join('server', 'lsp.py'));
-    const serverOptions: ServerOptions = {
-        command: 'python',
-        args: [serverModule],
-        transport: TransportKind.stdio
-    };
-    const clientOptions: LanguageClientOptions = {
-        documentSelector: [{ scheme: 'file', language: 'sagemath' }]
-    };
-    client = new LanguageClient(
-        'sagemath-lsp',
-        'SageMath Language Server',
-        serverOptions,
-        clientOptions
-    );
 
-    // LSP start
-    client.start();
-    const logLevel = vscode.workspace.getConfiguration('sagemath-for-vscode').get<string>('LSPLogLevel', 'info');
-    client.sendNotification('sagemath/loglevel', { logLevel });
+    const useLSP = vscode.workspace.getConfiguration('sagemath-for-vscode.LSP').get<boolean>('useSageMathLSP', true);
+    if (!useLSP) {
+        vscode.window.showInformationMessage('SageMath Language Server is disabled. Please enable it in settings to use LSP features.');
+    }
+    else {
+        // LSP setup
+        const serverModule = context.asAbsolutePath(path.join('src', 'server', 'lsp.py'));
+        const serverOptions: ServerOptions = {
+            command: process.platform === 'win32' ? 'python' : 'python3',
+            args: [serverModule],
+            transport: TransportKind.stdio
+        };
+        const clientOptions: LanguageClientOptions = {
+            documentSelector: [{ scheme: 'file', language: 'sagemath' }]
+        };
+        client = new LanguageClient(
+            'sagemath-lsp',
+            'SageMath Language Server',
+            serverOptions,
+            clientOptions
+        );
 
-    // LSP restart
-    let restartLSP = vscode.commands.registerCommand('sagemath-for-vscode.restartLSP', async () => {
-        if (client && client.state === ClientState.Running) {
-            await client.stop();
-            await client.start();
-            vscode.window.showInformationMessage('SageMath Language Server restarted.');
-        } else {
-            vscode.window.showWarningMessage('SageMath Language Server not running.');
-        }
-    });
+        // LSP start
+        client.start();
+        const logLevel = vscode.workspace.getConfiguration('sagemath-for-vscode.LSP').get<string>('LSPLogLevel', 'info');
+        client.sendNotification('sagemath/loglevel', { logLevel });
 
-    context.subscriptions.push(restartLSP);
-
-    // Monitor LSP log level changes
-    context.subscriptions.push(
-        vscode.workspace.onDidChangeConfiguration((event) => {
-            if (event.affectsConfiguration('sagemath-for-vscode.LSPLogLevel')) {
-                const logLevel = vscode.workspace.getConfiguration('sagemath-for-vscode').get<string>('LSPLogLevel', 'info');
-                client.sendNotification('sagemath/loglevel', { logLevel });
-                vscode.window.showInformationMessage(`SageMath Language Server log level updated to ${logLevel}.`);
+        // LSP restart
+        let restartLSP = vscode.commands.registerCommand('sagemath-for-vscode.restartLSP', async () => {
+            if (client && client.state === ClientState.Running) {
+                await client.stop();
+                await client.start();
+                vscode.window.showInformationMessage('SageMath Language Server restarted.');
+            } else {
+                vscode.window.showWarningMessage('SageMath Language Server not running.');
             }
-        })
-    );
+        });
+
+        context.subscriptions.push(restartLSP);
+
+        // Monitor LSP log level changes
+        context.subscriptions.push(
+            vscode.workspace.onDidChangeConfiguration((event) => {
+                if (event.affectsConfiguration('sagemath-for-vscode.LSP.LSPLogLevel')) {
+                    const logLevel = vscode.workspace.getConfiguration('sagemath-for-vscode.LSP').get<string>('LSPLogLevel', 'info');
+                    client.sendNotification('sagemath/loglevel', { logLevel });
+                    vscode.window.showInformationMessage(`SageMath Language Server log level updated to ${logLevel}.`);
+                }
+            })
+        );
+    }
+
 
     // // LSP restart button
     // const item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
