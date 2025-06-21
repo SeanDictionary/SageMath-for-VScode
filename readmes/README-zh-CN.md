@@ -4,6 +4,8 @@
 
 <div align="center"><a href="../README.md">English</a> | 中文</div>
 
+---
+
 ## 简介
 
 这是一个为 [SageMath](https://www.sagemath.org/) 在 VScode 上 提供语法高亮、代码运行等功能的扩展插件。
@@ -13,7 +15,7 @@
 ## 功能特性
 
 -   SageMath 代码语法高亮
--   ~~SageMath 代码语义高亮~~ 暂未支持
+-   支持部分基础的 SageMath 代码语义高亮（但是有一些已知问题，查看[问题清单](./SemanticHighlighting-zh-CN.md)了解如何规避这些问题）
 -   支持 F5、命令面板和按钮运行 SageMath 文件
 -   支持快捷键进行行注释和块注释
 

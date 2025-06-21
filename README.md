@@ -4,6 +4,8 @@
 
 <div align="center">English | <a href="./readmes/README-zh-CN.md">中文</a></div>
 
+---
+
 ## What is this?
 
 It's a extension for [SageMath](https://www.sagemath.org/) that provides syntax highlighting, code execution, and other features for Visual Studio Code.
@@ -13,7 +15,7 @@ I wish to make it a full-featured SageMath extension, especially for SageMath's 
 ## Features
 
 -   Syntax highlighting for SageMath code
--   ~~Semantic highlighting for SageMath code~~ Not supported yet
+-   Basic Semantic highlighting for SageMath code (there are still some bugs, you can see [known bugs file](./readmes/SemanticHighlighting-en.md) for details)
 -   Support F5, command and buttom to run SageMath file
 -   Support hotkey for line comment and block comment
 

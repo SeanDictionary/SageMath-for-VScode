@@ -9,10 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+-   None
+
+## [0.0.2] - 2025-06-21
+
+### Added
+
 -   Command: restart LSP
 -   Add tiny logging package in utils
 -   Add settings to configure LSP log level
 -   Add support for real-time LSP log level switching
+-   Add basic semantic highlighting for SageMath
 
 ## [0.0.1] - 2025-06-13
 

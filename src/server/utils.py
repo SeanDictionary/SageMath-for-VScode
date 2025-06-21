@@ -1,10 +1,12 @@
 import copy
 import time
+import attrs
+import re
 
 from pygls.server import LanguageServer
 from pygls.workspace import TextDocument
-import attrs
-import re
+
+from predefinition import FUNCTIONS, CLASSES, KEYWORDS
 
 
 class Logging:
@@ -49,17 +51,6 @@ COMMENT = re.compile("#.*$")
 BLOCK_STRING_BEGIN = re.compile("('''|\"\"\").*$")
 BLOCK_STRING_END = re.compile(".*('''|\"\"\")")
 LINE_STRING = re.compile("('(.*?)')|('''(.*?)''')|(\"(.*?)\")|(\"\"\"(.*?)\"\"\")")
-
-# For identify tokens
-TOKEN_TYPES = ["namespace", "type", "class", "function", "variable", "parameter", "property", "method", "keyword", "modifier", "operator", "string", "number", "comment"]
-TOKEN_MODIFIERS = ["declaration", "definition", "readonly", "static", "deprecated", "defaultLibrary"]
-
-# For classify tokens
-KEYWORDS = {"for", "if", "else", "while", "return", "import", "from", "as", "try", "except", "finally", "with", "yield", "def", "class", "lambda", "assert", "break", "continue", "pass", "global", "nonlocal", "del", "raise", "in", "is", "not", "and", "or", "True", "False", "None", "self"}
-
-# Predefined sets for SageMath Std functions and classes
-FUNCTIONS = set()
-CLASSES = {}
 
 
 @attrs.define
@@ -203,13 +194,24 @@ class SemanicSever(LanguageServer):
                     if token.text == "class" and i + 1 < len(tokens) and tokens[i + 1].line == 0:
                         next_token = tokens[i + 1]
                         class_names[next_token.text] = {"methods": [], "properties": {}}
-                    # TODO from ... import ...
+                    elif token.text == "from" and i + 1 < len(tokens):
+                        tmp = 1
+                        while i + tmp < len(tokens) and tokens[i + tmp].line == 0:
+                            next_token = tokens[i + tmp]
+                            if next_token.text != "*":
+                                next_token.tok_type = "class"
+                            tmp += 1
+                            if i + tmp < len(tokens) and tokens[i + tmp].text == "." and tokens[i + 1].line == 0:
+                                tmp += 1
+                            else:
+                                break
                     # ? Unable to recognize the import name is a class or a function. and the methods of the imported class can't be recognized and hightlighted.
                     elif token.text == "import" and i + 1 < len(tokens):
                         tmp = 1
                         while i + tmp < len(tokens) and tokens[i + tmp].line == 0:
                             next_token = tokens[i + tmp]
-                            next_token.tok_type = "class"
+                            if next_token.text != "*":
+                                next_token.tok_type = "class"
                             tmp += 1
                             if i + tmp < len(tokens) and tokens[i + tmp].text == "." and tokens[i + 1].line == 0:
                                 tmp += 1
@@ -217,9 +219,11 @@ class SemanicSever(LanguageServer):
                                 tmp += 1
                                 if i + tmp < len(tokens) and tokens[i + tmp].line == 0:
                                     next_token = tokens[i + tmp]
-                                    next_token.tok_type = "class"
+                                    if next_token.text != "*":
+                                        next_token.tok_type = "class"
                                 break
-                        class_names[next_token.text] = {"methods": [], "properties": {}}
+                        if next_token.text != "*":
+                            class_names[next_token.text] = {"methods": [], "properties": {}}
                     elif token.text == "def" and i + 1 < len(tokens):
                         if i + 3 < len(tokens) and tokens[i + 3].text == "self" and tokens[i + 3].line == 0:
                             next_token = tokens[i + 1]
@@ -246,7 +250,26 @@ class SemanicSever(LanguageServer):
                                 next_token.tok_type = "method"
                             elif next_token.text in class_names[class_name]["properties"]:
                                 next_token.tok_type = "variable"
-                    # TODO for i in range
+                    # ? Unsupport highlighting variables inline for loop
+                    elif token.text == "for":
+                        tmp = 1
+                        while i + tmp < len(tokens) and tokens[i + tmp].line == 0:
+                            next_token = tokens[i + tmp]
+                            if next_token.text != "in":
+                                next_token.tok_type = "variable"
+                                if next_token.text == next_token.text.upper():
+                                    next_token.tok_modifiers.append("readonly")
+                                    const_names.add(next_token.text)
+                                variable_names[next_token.text] = ""
+                            else:
+                                break
+                            tmp += 1
+                            next_token = tokens[i + tmp]
+                            if next_token.text == ",":
+                                tmp += 1
+                            else:
+                                break
+
 
                 # //Add new defined variables, but it only support for single define
                 # elif i + 1 < len(tokens) and tokens[i + 1].text == "=" and tokens[i + 1].line == 0:
@@ -260,21 +283,40 @@ class SemanicSever(LanguageServer):
                 #         variable_names[token.text] = ""
 
 
-                # TODO unfinished: Special check for R.<x> = PolynomialRing(QQ)
-                # elif i + 2 < len(tokens) and tokens[i + 1].text == "." and tokens[i + 2].text == "<":
-                #     while i + tmp < len(tokens) and tokens[i + tmp].text != ">" and tokens[i + tmp].line == 0:
-                #         pass
+                # Special check for R.<x> = PolynomialRing(QQ)
+                elif i + 2 < len(tokens) and tokens[i + 1].text == "." and tokens[i + 2].text == "<":
+                    tmp = 3
+                    while i + tmp < len(tokens) and tokens[i + tmp].line == 0:
+                        if tokens[i + tmp].tok_type == "":
+                            next_token = tokens[i + tmp]
+                            next_token.tok_type = "variable"
+                            variable_names[next_token.text] = ""
+                            tmp += 1
+                            if i + tmp < len(tokens) and tokens[i + tmp].text == ",":
+                                tmp += 1
+                                continue
+                            elif i + tmp < len(tokens) and tokens[i + tmp].text == ">":
+                                if i + tmp + 2 < len(tokens) and tokens[i + tmp + 1].text == "=":
+                                    token.tok_type = "variable"
+                                    if tokens[i + tmp + 2].text in class_names and tokens[i + tmp + 2].line == 0:
+                                        variable_names[token.text] = tokens[i + tmp + 2].text
+                                    break
+                            else:
+                                break
+                        else:
+                            break
+
+
                 # ? There will be some problems while using the same name from different set, like a = a().
                 # ? So pls correctly name your variables, QAQ
                 elif token.text in function_names:
                     token.tok_type = "function"
                 elif token.text in class_names:
                     token.tok_type = "class"
-                elif token.text in const_names:
-                    token.tok_type = "variable"
-                    token.tok_modifiers.append("readonly")
                 elif token.text in variable_names:
                     token.tok_type = "variable"
+                    if token.text in const_names:
+                        token.tok_modifiers.append("readonly")
                     # Check if the next token is a method or property of a class
                     # ? Not support mulity-calls yet, like a.b.c(). It only support a.b or a.b()
                     if i + 2 < len(tokens) and tokens[i + 1].text == "." and tokens[i + 1].line == 0:
@@ -306,7 +348,7 @@ class SemanicSever(LanguageServer):
                     tmp += 1
                 if len(tmp_variables) == 1:
                     if i + 1 < len(tokens) and tokens[i + 1].text in class_names and tokens[i + 1].line == 0:
-                        variable_names[token.text] = tokens[i + 1].text
+                        variable_names[tmp_variables[0]] = tokens[i + 1].text
                     else:
                         variable_names[tmp_variables[0]] = ""
                 else:
@@ -314,10 +356,10 @@ class SemanicSever(LanguageServer):
                     for name in tmp_variables:
                         variable_names[name] = ""
 
-            self.log.debug(f"Classified token: {token}")    # Debug for: classify tokens
+            # self.log.debug(f"Classified token: {token}")    # Debug for: classify tokens
 
-        self.log.debug(f"Classified class: {class_names}")
-        self.log.debug(f"Classified function: {function_names}")
+        # self.log.debug(f"Classified class: {class_names}")
+        # self.log.debug(f"Classified function: {function_names}")
         self.log.debug(f"Classified variable: {variable_names}")
         self.log.debug(f"Classified const: {const_names}")
 

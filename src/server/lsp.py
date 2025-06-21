@@ -4,7 +4,7 @@ from lsprotocol.types import (
 )
 from lsprotocol import types
 from utils import Logging, SemanicSever
-from utils import TOKEN_TYPES, TOKEN_MODIFIERS
+from predefinition import TOKEN_TYPES, TOKEN_MODIFIERS
 
 TOKEN_TYPES_DIC = {s: i for i, s in enumerate(TOKEN_TYPES)}
 TOKEN_MODIFIERS_DIC = {s: 2**i for i, s in enumerate(TOKEN_MODIFIERS)}
