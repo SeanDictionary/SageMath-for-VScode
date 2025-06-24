@@ -1,7 +1,9 @@
 .vscode/**
 .vscode-test/**
 .gitignore
-**/__pycache__/**
+__pycache__/
+*.py[cod]
+*$py.class
 *.ts
 notebook.md
 *.tmLanguage.json

@@ -2,6 +2,8 @@ node_modules
 *.vsix
 .env
 out
-**/__pycache__/**
+__pycache__/
+*.py[cod]
+*$py.class
 notebook.md
 *.tmLanguage.json
