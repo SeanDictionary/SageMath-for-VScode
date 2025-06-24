@@ -2,7 +2,7 @@
     "name": "sagemath-for-vscode",
     "displayName": "SageMath for VScode",
     "description": "An extension for SageMath support in VS Code. Includes highighting and run",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "publisher": "SeanDictionary",
     "license": "AGPL-3.0",
     "repository": {
@@ -17,7 +17,19 @@
         "Extension Packs",
         "Debuggers"
     ],
+    "keywords": [
+        "sagemath",
+        "sage",
+        "mathematics",
+        "programming",
+        "coding",
+        "extension",
+        "lsp",
+        "ctf",
+        "crypto"
+    ],
     "main": "./out/extension.js",
+    "activationEvents": [],
     "contributes": {
         "languages": [
             {
@@ -51,6 +63,11 @@
                 "command": "sagemath-for-vscode.restartLSP",
                 "title": "SageMath for VScode: Restart SageMath LSP",
                 "icon": "$(sync)"
+            },
+            {
+                "command": "sagemath-for-vscode.selectCondaEnv",
+                "title": "SageMath for VScode: Select Conda Environment",
+                "icon": "$(terminal)"
             }
         ],
         "keybindings": [
@@ -63,11 +80,17 @@
         "configuration": {
             "title": "SageMath for VScode",
             "properties": {
-                "sagemath-for-vscode.path": {
+                "sagemath-for-vscode.sage.path": {
                     "title": "SageMath Executable Path",
                     "type": "string",
                     "default": "sage",
                     "markdownDescription": "Path to the SageMath executable"
+                },
+                "sagemath-for-vscode.sage.condaEnvPath": {
+                    "title": "SageMath Conda Environment",
+                    "type": "string",
+                    "default": "",
+                    "markdownDescription": "Name of the Conda environment to use for SageMath.\n\nIf not set, will use global environment."
                 },
                 "sagemath-for-vscode.LSP.useSageMathLSP": {
                     "title": "Use SageMath Language Server Protocol",
@@ -119,7 +142,7 @@
         "pretest": "npm run compile",
         "test": "node ./out/test/runTest.js"
     },
-    "devDependencies": {
+    "dependencies": {
         "@types/node": "^24.0.1",
         "@types/vscode": "^1.100.0",
         "vscode-languageclient": "^9.0.1",
