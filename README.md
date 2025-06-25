@@ -21,7 +21,7 @@ I wish to make it a full-featured SageMath extension, especially for SageMath's 
 -   Support conda environment switching
 -   Semantic highlighting rely on `perdefinition.py` for SageMath Std Library, you can modify this file to add more semantic highlighting support
 
-## Chagelog
+## Changelog
 
 See [CHANGELOG.md](./CHANGELOG.md) for details.
 
