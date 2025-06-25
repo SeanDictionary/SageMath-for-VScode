@@ -1,6 +1,6 @@
 # SageMath For VScode
 
-![Release](https://img.shields.io/github/v/release/SeanDictionary/SageMath-for-VScode) ![Platform](https://img.shields.io/badge/platform-Linux-green) ![License](https://img.shields.io/github/license/SeanDictionary/SageMath-for-VScode) ![GitHub top language](https://img.shields.io/github/languages/top/SeanDictionary/SageMath-for-VScode) ![GitHub last commit](https://img.shields.io/github/last-commit/SeanDictionary/SageMath-for-VScode)
+![Release](https://img.shields.io/github/v/release/SeanDictionary/SageMath-for-VScode) ![Platform](https://img.shields.io/badge/platform-Linux-green) ![License](https://img.shields.io/github/license/SeanDictionary/SageMath-for-VScode) ![GitHub repo size](https://img.shields.io/github/repo-size/SeanDictionary/SageMath-for-VScode) ![GitHub last commit](https://img.shields.io/github/last-commit/SeanDictionary/SageMath-for-VScode) ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 
 <div align="center"><a href="../README.md">English</a> | 中文</div>
 
@@ -18,6 +18,8 @@
 -   支持部分基础的 SageMath 代码语义高亮（但是有一些已知问题，查看[问题清单](./SemanticHighlighting-zh-CN.md)了解如何规避这些问题）
 -   支持 F5、命令面板和按钮运行 SageMath 文件
 -   支持快捷键进行行注释和块注释
+-   支持 conda 环境切换
+-   语义高亮依赖根据 SageMath 标准库写的 `perdefinition.py`，你可以自己修改这个文件来添加更多的语义高亮支持
 
 ## 更新日志
 

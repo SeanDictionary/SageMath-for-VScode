@@ -1,6 +1,6 @@
 # SageMath For VScode
 
-![Release](https://img.shields.io/github/v/release/SeanDictionary/SageMath-for-VScode) ![Platform](https://img.shields.io/badge/platform-Linux-green) ![License](https://img.shields.io/github/license/SeanDictionary/SageMath-for-VScode) ![GitHub top language](https://img.shields.io/github/languages/top/SeanDictionary/SageMath-for-VScode) ![GitHub last commit](https://img.shields.io/github/last-commit/SeanDictionary/SageMath-for-VScode)
+![Release](https://img.shields.io/github/v/release/SeanDictionary/SageMath-for-VScode) ![Platform](https://img.shields.io/badge/platform-Linux-green) ![License](https://img.shields.io/github/license/SeanDictionary/SageMath-for-VScode) ![GitHub repo size](https://img.shields.io/github/repo-size/SeanDictionary/SageMath-for-VScode) ![GitHub last commit](https://img.shields.io/github/last-commit/SeanDictionary/SageMath-for-VScode) ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 
 <div align="center">English | <a href="./readmes/README-zh-CN.md">中文</a></div>
 
@@ -18,6 +18,8 @@ I wish to make it a full-featured SageMath extension, especially for SageMath's 
 -   Basic Semantic highlighting for SageMath code (there are still some bugs, you can see [known bugs file](./readmes/SemanticHighlighting-en.md) for details)
 -   Support F5, command and buttom to run SageMath file
 -   Support hotkey for line comment and block comment
+-   Support conda environment switching
+-   Semantic highlighting rely on `perdefinition.py` for SageMath Std Library, you can modify this file to add more semantic highlighting support
 
 ## Chagelog
 
