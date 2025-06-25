@@ -2,7 +2,7 @@
     "name": "sagemath-for-vscode",
     "displayName": "SageMath for VScode",
     "description": "An extension for SageMath support in VS Code. Includes highighting and run",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "publisher": "SeanDictionary",
     "license": "AGPL-3.0",
     "repository": {
