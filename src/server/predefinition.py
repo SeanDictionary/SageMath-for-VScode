@@ -11,7 +11,7 @@ KEYWORDS = {
 }
 
 # Predefined sets for SageMath Std functions and classes
-FUNCTIONS = {"GCD", "crt"}
+FUNCTIONS = {"GCD", "crt", "diagonal_matrix", "block_matrix", "identity_matrix", "zero_matrix", "random_matrix",}
 CLASSES = {
     "ZZ": {"methods": [], "properties": {}},
     "QQ": {"methods": [], "properties": {}},
@@ -19,4 +19,6 @@ CLASSES = {
     "GF": {"methods": [], "properties": {}},
     "PolynomialRing": {"methods": [], "properties": {}},
     "Ideal": {"methods": ["groebner_basis"], "properties": {}},
+    "Matrix": {"methods": ["nrows", "ncols", "det", "rows", "columns", "solve_right", "solve_left", "LLL", "BKZ"], "properties": {}},
+    "Vector": {"methods": [], "properties": {}},
 }

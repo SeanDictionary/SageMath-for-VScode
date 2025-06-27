@@ -29,6 +29,7 @@
         "crypto"
     ],
     "main": "./out/extension.js",
+    "icon": "images/icon.ico",
     "activationEvents": [],
     "contributes": {
         "languages": [
