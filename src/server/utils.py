@@ -43,14 +43,14 @@ class Logging:
 # https://pygls.readthedocs.io/en/latest/servers/examples/semantic-tokens.html
 
 # For split tokens
-SYMBOL = re.compile("[A-Za-z_]\w*")
-NUMBER = re.compile("(\d+(\.\d+)?[eE][-+]?\d+)|(\d+(\.\d+)?)|0[bB][01]+|0[oO][0-7]+0[xX][0-9a-fA-F]+")
-OP = re.compile("(//|\^\^|==|!=|<=|>=|->|[-+*/%=<>.,:;\(\)\[\]{}\^\|\&])")
-SPACE = re.compile("\s+")
-COMMENT = re.compile("#.*$")
-BLOCK_STRING_BEGIN = re.compile("('''|\"\"\").*$")
-BLOCK_STRING_END = re.compile(".*('''|\"\"\")")
-LINE_STRING = re.compile("('(.*?)')|('''(.*?)''')|(\"(.*?)\")|(\"\"\"(.*?)\"\"\")")
+SYMBOL = re.compile(r"[A-Za-z_]\w*")
+NUMBER = re.compile(r"(\d+(\.\d+)?[eE][-+]?\d+)|(\d+(\.\d+)?)|0[bB][01]+|0[oO][0-7]+0[xX][0-9a-fA-F]+")
+OP = re.compile(r"(//|\^\^|==|!=|<=|>=|->|[-+*/%=<>.,:;\(\)\[\]{}\^\|\&])")
+SPACE = re.compile(r"\s+")
+COMMENT = re.compile(r"#.*$")
+BLOCK_STRING_BEGIN = re.compile(r"('''|\"\"\").*$")
+BLOCK_STRING_END = re.compile(r".*('''|\"\"\")")
+LINE_STRING = re.compile(r"('(.*?)')|('''(.*?)''')|(\"(.*?)\")|(\"\"\"(.*?)\"\"\")")
 
 
 @attrs.define

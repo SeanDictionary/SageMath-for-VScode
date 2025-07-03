@@ -4,6 +4,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-*.ts
+src/*.ts
+src/server/__pycache__
 notebook.md
 *.tmLanguage.json

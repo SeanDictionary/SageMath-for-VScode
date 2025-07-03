@@ -10,10 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 -   Add icon
+-   support more functions and classes in `predefinition.py`
 
 ### Changed
 
--   support more functions and classes in `predefinition.py`
+-   wrap start lsp function
+
+### Fixed
+
+-   auto-installing python dependencies instead of venv
 
 ## [0.0.3] - 2025-06-25
 
