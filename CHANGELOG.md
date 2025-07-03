@@ -5,31 +5,43 @@ All notable changes to the "sagemath" extension will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2025-07-04
+
+-  Release 1.0.0
+
+### Test
+
+-  Test the extension on WSL2
+
+### Changed
+
+-  Update readme
+
 ## [0.0.4] - 2025-07-04
 
 ### Added
 
 -   Add icon
--   support more functions and classes in `predefinition.py`
+-   Support more functions and classes in `predefinition.py`
 
 ### Changed
 
--   wrap start lsp function
+-   Wrap start lsp function
 
 ### Fixed
 
--   auto-installing python dependencies instead of venv
+-   Auto-installing python dependencies instead of venv
 
 ## [0.0.3] - 2025-06-25
 
 ### Added
 
 -   Select Conda environment for SageMath
--   using venv for lsp
+-   Using venv for lsp
 
 ### Fixed
 
--   change package.json devDependencies to dependencies to package and publish the extension
+-   Change package.json devDependencies to dependencies to package and publish the extension
 
 ## [0.0.2] - 2025-06-21
 

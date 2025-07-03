@@ -27,15 +27,14 @@
 
 ## 使用方法
 
-这个插件**尚未在** VScode 插件市场发布，所以需要麻烦各位从 GitHub 下载并手动安装。
+这个插件**已经**在 VScode 插件市场发布，所以需要麻烦各位从 GitHub 下载并手动安装。
 
 ### 从 GitHub 安装
 
-1. 前往 [Releases 页面](https://github.com/SeanDictionary/SageMath-for-VScode/releases) 下载最新的预发布版或正式版本
-2. 打开 `~/.vscode/extensions/` 目录
-3. 将下载的文件解压到该目录下
+1. 前往 [Releases 页面](https://github.com/SeanDictionary/SageMath-for-VScode/releases) 下载最新的预发布版或正式版本包含的 `.vsix` 文件
+2. 将下载的 `.vsix` 文件拖入 Visual Studio Code 窗口，或者使用命令面板（`Ctrl+Shift+P`）输入 `Extensions: Install from VSIX...`，然后选择下载的 `.vsix` 文件。
 
-### ~~从 VScode Marketplace 安装~~ 暂未支持
+### 从 VScode Marketplace 安装
 
 1. 打开 Visual Studio Code
 2. 点击侧边栏的扩展图标或按 `Ctrl+Shift+X` 进入扩展视图

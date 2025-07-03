@@ -27,15 +27,14 @@ See [CHANGELOG.md](./CHANGELOG.md) for details.
 
 ## Usage
 
-The extension **isn't released** on the Visual Studio Code Marketplace yet, so you need to download it from github and install personaly.
+The extension **has released** on the Visual Studio Code Marketplace yet, so you need to download it from github and install personaly.
 
 ### From GitHub
 
-1. Download the latest pre-release or release from the [Releases page](https://github.com/SeanDictionary/SageMath-for-VScode/releases)
-2. Open path `~/.vscode/extensions/` in your file manager.
-3. Extract the downloaded file to this directory.
+1. Download the `.vsix` file from latest pre-release or release from the [Releases page](https://github.com/SeanDictionary/SageMath-for-VScode/releases)
+2. Drag the `.vsix` file into the Visual Studio Code window, or use the command palette (`Ctrl+Shift+P`) and type `Extensions: Install from VSIX...`, then select the downloaded `.vsix` file.
 
-### ~~From VScode Marketplace~~ Not supported yet
+### From VScode Marketplace
 
 1. Open Visual Studio Code
 2. Go to Extensions view by clicking on the Extensions icon in the Activity Bar on the side of the window or pressing `Ctrl+Shift+X`.
