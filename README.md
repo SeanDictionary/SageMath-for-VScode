@@ -27,7 +27,7 @@ See [CHANGELOG.md](./CHANGELOG.md) for details.
 
 ## Usage
 
-The extension **has released** on the Visual Studio Code Marketplace yet, so you need to download it from github and install personaly.
+The extension **has released** on the Visual Studio Code Marketplace yet. You can install it from GitHub or the Visual Studio Code Marketplace.
 
 ### From GitHub
 
