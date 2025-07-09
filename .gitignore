@@ -1,8 +1,9 @@
 .vscode
 node_modules
-*.vsix
 out
+*.vsix
 *.py[cod]
 *$py.class
 **/__pycache__/
+**/envLSP
 notebook.md

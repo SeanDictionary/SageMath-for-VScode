@@ -5,4 +5,5 @@
 *$py.class
 src/*.ts
 **/__pycache__
+**/envLSP
 notebook.md

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { basename, join } from 'path';
-import { existsSync, unlink } from 'fs';
+import { existsSync, unlinkSync } from 'fs';
 import { exec } from 'child_process';
 import {
     LanguageClient,
@@ -38,14 +38,11 @@ export function activate(context: vscode.ExtensionContext) {
             const command = `${SageMathPath} ${filePath}`;
             const terminalName = !condaEnvPath ? 'SageMath' : `SageMath (${condaEnvName})`;
 
-            const shellPath = process.platform === 'win32' ? 'cmd.exe' : 'bash';
-
             let terminal = vscode.window.terminals.find(t => t.name === terminalName);
 
             if (!terminal) {
                 terminal = vscode.window.createTerminal({
                     name: terminalName,
-                    shellPath: shellPath,
                 });
                 if (condaEnvPath) {
                     terminal.sendText(`conda activate ${condaEnvPath}`);
@@ -65,27 +62,45 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage('SageMath Language Server is disabled. Please enable it in settings and restart extnsion to use LSP features.');
     }
     else {
-        // Function: install requirements.txt
-        function installPythonDeps(requirementsPath: string): Promise<void> {
+        // Function: install requirements
+        function installRequirements(envLSPpath: string, requirementsPath: string): Promise<void> {
             return new Promise((resolve, reject) => {
-                const command = `pip install -r "${requirementsPath}"`;
-                exec(command, (error, stdout, stderr) => {
+                const pipPath = process.platform === 'win32' ? join(envLSPpath, 'Scripts', 'pip.exe') : join(envLSPpath, 'bin', 'pip');
+                exec(`${pipPath} install -r ${requirementsPath}`, (error, stdout, stderr) => {
                     if (error) {
-                        reject(stderr || error.message);
-                    } else {
-                        unlink(requirementsPath, () => { });
-                        resolve();
+                        reject(`Install Requirements Error: ${stderr}`);
+                        return;
                     }
+                    resolve();
                 });
             });
         }
 
+        // Function: create venv for LSP
+        function createEnvLSP(envLSPpath: string, requirementsPath: string): Promise<void> {
+            return new Promise((resolve, reject) => {
+                const pythonCommand = process.platform === 'win32' ? 'python' : 'python3';
+                exec(`${pythonCommand} -m venv ${envLSPpath}`, (error, stdout, stderr) => {
+                    if (error) {
+                        reject(`Create venv Error: ${stderr}`);
+                        return;
+                    }
+
+                    installRequirements(envLSPpath, requirementsPath)
+                        .then(() => resolve())
+                        .catch(err => reject(err));
+                });
+            });
+        }
+
+
         // Function: start LSP
-        function startLSP() {
+        function startLSP(envLSPpath: string) {
             // LSP setup
+            const pythonPath = process.platform === 'win32' ? join(envLSPpath, 'Scripts', 'python.exe') : join(envLSPpath, 'bin', 'python');
             const serverModule = context.asAbsolutePath(join('src', 'server', 'lsp.py'));
             const serverOptions: ServerOptions = {
-                command: process.platform === 'win32' ? 'python' : 'python3',
+                command: pythonPath,
                 args: [serverModule],
                 transport: TransportKind.stdio
             };
@@ -117,24 +132,27 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         // Start LSP
+        const envLSPpath = context.asAbsolutePath(join('src', 'server', 'envLSP'));
         const requirementsPath = context.asAbsolutePath(join('src', 'server', 'requirements.txt'));
         (async () => {
-            if (existsSync(requirementsPath)) {
+            if (!existsSync(envLSPpath)) {
                 await vscode.window.withProgress({
                     location: vscode.ProgressLocation.Notification,
-                    title: '📦 Installing Python dependencies for SageMath LSP...',
+                    title: '📦 Creating Python venv for SageMath LSP...',
                     cancellable: false
                 }, async () => {
                     try {
-                        await installPythonDeps(requirementsPath);
-                        vscode.window.showInformationMessage('✅ Python dependencies installed.');
-                        startLSP();
+                        await createEnvLSP(envLSPpath, requirementsPath);
+                        vscode.window.showInformationMessage('✅ Python venv created.');
+                        startLSP(envLSPpath);
                     } catch (err) {
-                        vscode.window.showErrorMessage(`❌ Failed to install Python dependencies: ${err}`);
+                        vscode.window.showErrorMessage(`❌ Failed to creat Python venv: \n${err}`);
+                        if (existsSync(envLSPpath)) { unlinkSync(envLSPpath); }
                     }
                 });
-            } else {
-                startLSP();
+            }
+            else {
+                startLSP(envLSPpath);
             }
         })();
     }

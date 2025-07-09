@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Fixed
+### Added
 
--  Fix the dependences
+-  Auto-create Python venv for LSP. It fix errors coused by PEP 668 on new Linux distributions like Arch, Ubuntu 24.04, etc.
+
+### Changed
+
+-  Using the default terminal in vscode to run sagemath. It supports zsh, bash, cmd, pwsh, etc.
+
+### Removed
+
+-  Remove the unuseful dependences
 
 ## [1.0.0] - 2025-07-04
 
