@@ -264,14 +264,13 @@ class SemanicSever(LanguageServer):
                             else:
                                 break
                             tmp += 1
-                            next_token = tokens[i + tmp]
-                            if next_token.text == ",":
+                            if i + tmp < len(tokens) and tokens[i + tmp].text == ",":
                                 tmp += 1
                             else:
                                 break
 
 
-                # //Add new defined variables, but it only support for single define
+                # // Add new defined variables, but it only support for single define
                 # elif i + 1 < len(tokens) and tokens[i + 1].text == "=" and tokens[i + 1].line == 0:
                 #     token.tok_type = "variable"
                 #     if token.text == token.text.upper():

@@ -20,5 +20,6 @@ CLASSES = {
     "PolynomialRing": {"methods": [], "properties": {}},
     "Ideal": {"methods": ["groebner_basis"], "properties": {}},
     "Matrix": {"methods": ["nrows", "ncols", "det", "rows", "columns", "solve_right", "solve_left", "LLL", "BKZ"], "properties": {}},
-    "Vector": {"methods": [], "properties": {}},
+    "vector": {"methods": [], "properties": {}},
+    "var": {"methods": [], "properties": {}},
 }

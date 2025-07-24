@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { basename, join } from 'path';
+import { basename, join, dirname } from 'path';
 import { existsSync, unlinkSync } from 'fs';
 import { exec } from 'child_process';
 import {
@@ -35,7 +35,8 @@ export function activate(context: vscode.ExtensionContext) {
             }
 
             const filePath = editor.document.uri.fsPath;
-            const command = `${SageMathPath} ${filePath}`;
+            const dirpath = dirname(filePath);
+            const command = `cd '${dirpath}' && ${SageMathPath} '${filePath}'`;
             const terminalName = !condaEnvPath ? 'SageMath' : `SageMath (${condaEnvName})`;
 
             let terminal = vscode.window.terminals.find(t => t.name === terminalName);

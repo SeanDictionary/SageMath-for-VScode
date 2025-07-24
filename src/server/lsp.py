@@ -9,7 +9,7 @@ from predefinition import TOKEN_TYPES, TOKEN_MODIFIERS
 TOKEN_TYPES_DIC = {s: i for i, s in enumerate(TOKEN_TYPES)}
 TOKEN_MODIFIERS_DIC = {s: 2**i for i, s in enumerate(TOKEN_MODIFIERS)}
 
-server = SemanicSever(name="sagemath-lsp", version="1.1.0")
+server = SemanicSever(name="sagemath-lsp", version="1.1.1")
 
 
 # -----------Logging Configuration-----------
