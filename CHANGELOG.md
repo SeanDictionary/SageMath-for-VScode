@@ -4,6 +4,22 @@ All notable changes to the "sagemath" extension will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2] - 2025-11-05
+
+### Fixed
+
+-   Fix [#1](https://github.com/SeanDictionary/SageMath-for-VScode/issues/1)
+
+### Changed
+
+-   Using sage -python to start LSP server [#2](https://github.com/SeanDictionary/SageMath-for-VScode/issues/2)
+
+### Added
+
+-   Add .vscode for development
+
+---
+
 ## [1.1.1] - 2025-07-24
 
 ### Fixed
@@ -14,6 +30,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 -   Update `predefinition.py`.
 -   Add `cd` command before running SageMath.
+
+---
 
 ## [1.1.0] - 2025-07-09
 
@@ -29,6 +47,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 -   Remove the unuseful dependences
 
+---
+
 ## [1.0.0] - 2025-07-04
 
 -   Release 1.0.0
@@ -40,6 +60,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Changed
 
 -   Update readme
+
+---
 
 ## [0.0.4] - 2025-07-04
 
@@ -56,6 +78,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 -   Auto-installing python dependencies instead of venv
 
+---
+
 ## [0.0.3] - 2025-06-25
 
 ### Added
@@ -67,6 +91,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 -   Change package.json devDependencies to dependencies to package and publish the extension
 
+---
+
 ## [0.0.2] - 2025-06-21
 
 ### Added
@@ -76,6 +102,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 -   Add settings to configure LSP log level
 -   Add support for real-time LSP log level switching
 -   Add basic semantic highlighting for SageMath
+
+---
 
 ## [0.0.1] - 2025-06-13
 
