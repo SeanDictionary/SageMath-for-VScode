@@ -2,7 +2,7 @@
 
 ![Release](https://img.shields.io/github/v/release/SeanDictionary/SageMath-for-VScode) ![Platform](https://img.shields.io/badge/platform-Linux-green) ![License](https://img.shields.io/github/license/SeanDictionary/SageMath-for-VScode) ![GitHub repo size](https://img.shields.io/github/repo-size/SeanDictionary/SageMath-for-VScode) ![GitHub last commit](https://img.shields.io/github/last-commit/SeanDictionary/SageMath-for-VScode) ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 
-<div align="center">English | <a href="./readmes/README-zh-CN.md">中文</a></div>
+<div align="center">English | <a href="./docs/README-zh-CN.md">中文</a></div>
 
 ---
 
@@ -15,7 +15,7 @@ I wish to make it a full-featured SageMath extension, especially for SageMath's 
 ## Features
 
 -   Syntax highlighting for SageMath code
--   Basic Semantic highlighting for SageMath code (there are still some bugs, you can see [known bugs file](./readmes/SemanticHighlighting-en.md) for details)
+-   Basic Semantic highlighting for SageMath code (there are still some bugs, you can see [known bugs file](./docs/SemanticHighlighting-en.md) for details)
 -   Support F5, command and buttom to run SageMath file
 -   Support hotkey for line comment and block comment
 -   Support conda environment switching
@@ -45,7 +45,7 @@ The extension **has released** on the Visual Studio Code Marketplace yet. You ca
 
 ## Contributes
 
-If you want to contribute to this project, you can fork the repository and create a pull request. You can also report issues or suggest features by opening an issue on the GitHub repository.
+If you want to contribute to this project, you can fork the repository and create a pull request. You can also report issues or suggest features by opening an issue on the GitHub repository. See [CONTRIBUTING.md](./docs/CONTRIBUTING.md) for more details.
 
 ## License
 
