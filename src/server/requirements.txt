@@ -1,1 +1,1 @@
-python-lsp-server==1.13.1
+python-lsp-server[all]==1.13.1

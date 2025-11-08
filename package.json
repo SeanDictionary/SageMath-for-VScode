@@ -82,10 +82,10 @@
             "title": "SageMath for VScode",
             "properties": {
                 "sagemath-for-vscode.sage.path": {
-                    "title": "SageMath Executable Path",
+                    "title": "SageMath Path",
                     "type": "string",
-                    "default": "sage",
-                    "markdownDescription": "Path to the SageMath executable"
+                    "default": "./bin/sage",
+                    "markdownDescription": "Path to the SageMath in conda environment.\n\nDefault is `./bin/sage`"
                 },
                 "sagemath-for-vscode.sage.condaEnvPath": {
                     "title": "SageMath Conda Environment",
