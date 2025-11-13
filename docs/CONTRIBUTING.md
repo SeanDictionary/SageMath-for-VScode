@@ -1,5 +1,7 @@
 # Build
 
+**All development is recommended to be done on a Linux system.**
+
 Install node.js and npm.
 
 ```bash

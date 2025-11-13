@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
-import path, { basename, join, dirname } from 'path';
-import { existsSync, rmSync } from 'fs';
+import path, { basename, dirname } from 'path';
 import { exec } from 'child_process';
 import {
     LanguageClient,
@@ -185,7 +184,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     const useLSP = vscode.workspace.getConfiguration('sagemath-for-vscode.LSP').get<boolean>('useSageMathLSP', true);
     if (!useLSP) {
-        vscode.window.showInformationMessage('SageMath Language Server is disabled. Please enable it in settings and restart extnsion to use LSP features.');
+        vscode.window.showInformationMessage('SageMath Language Server is disabled.');
     }
     else {
         // Start LSP
@@ -194,7 +193,7 @@ export function activate(context: vscode.ExtensionContext) {
             if (missing.length === 0) {
                 await startLSP();
             } else {
-                vscode.window.showErrorMessage(`Missing packages for LSP: ${missing.join(', ')}`);
+                vscode.window.showErrorMessage(`Missing packages for LSP: ${missing.join(', ')}\n\nPlease install from https://github.com/SeanDictionary/sage-lsp-server`);
             }
         })();
     }
