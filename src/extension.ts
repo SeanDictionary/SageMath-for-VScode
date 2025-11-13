@@ -70,15 +70,16 @@ export function activate(context: vscode.ExtensionContext) {
                 const selectedPath = envs.find(env => env.name === selectedEnv.label)?.path;
                 if (selectedPath) {
                     vscode.workspace.getConfiguration('sagemath-for-vscode.sage').update('condaEnvPath', selectedPath, true);
-                    vscode.window.showInformationMessage(`Selected Conda environment: ${selectedEnv.label} with path ${selectedPath}`);
+                    vscode.window.showInformationMessage(`Selected Conda environment: \n\n${selectedEnv.label} with path ${selectedPath}`);
                 }
             }
         } catch (error) {
-            vscode.window.showErrorMessage(`${error}`);
+            vscode.window.showErrorMessage(`Error fetching Conda environments: ${error}`);
         }
     });
 
     // Command: LSP restart
+    // TODO: bug fix
     let restartLSP = vscode.commands.registerCommand('sagemath-for-vscode.restartLSP', async () => {
         if (client && client.state === ClientState.Running) {
             await client.stop();
@@ -106,6 +107,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     // TODO: Function: Auto-clone&install Sage LSP server
+    //      Clone from https://github.com/SeanDictionary/sage-lsp-server and using `sage -pip install ./sage-lsp-server` to install
 
     // Function: Requirements check
     async function checkRequirements(): Promise<string[]> {

@@ -10,6 +10,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 -   File focus option when running SageMath in terminal
 
+### Fixed
+
+-   Fix conda env path empty and selection bugs
+
+### Changed
+
+-   Using sage global env instead of venv to be suitable for LSP
+
 ---
 
 ## [1.1.2] - 2025-11-05
