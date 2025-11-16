@@ -98,24 +98,6 @@
                     "type": "boolean",
                     "default": true,
                     "markdownDescription": "Enable or disable the SageMath Language Server Protocol.\n\nIt will take effect after restarting the editor."
-                },
-                "sagemath-for-vscode.LSP.LSPLogLevel": {
-                    "title": "SageMath LSP Log Level",
-                    "type": "string",
-                    "enum": [
-                        "error",
-                        "warn",
-                        "info",
-                        "debug"
-                    ],
-                    "enumDescriptions": [
-                        "Log only errors.",
-                        "Log warnings and errors.",
-                        "Log informational messages, warnings, and errors.",
-                        "Log debug messages, informational messages, warnings, and errors."
-                    ],
-                    "default": "info",
-                    "markdownDescription": "Log level for the SageMath Language Server Protocol."
                 }
             }
         },
