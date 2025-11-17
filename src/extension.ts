@@ -50,7 +50,7 @@ export function activate(context: vscode.ExtensionContext) {
                 }
             }
 
-            terminal.show();
+            terminal.show(true);
             terminal.sendText(command);
         });
     });
