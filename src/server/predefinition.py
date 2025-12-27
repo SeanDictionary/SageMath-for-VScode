@@ -15,6 +15,8 @@ FUNCTIONS = {"GCD", "crt", "diagonal_matrix", "block_matrix", "identity_matrix",
 CLASSES = {
     "ZZ": {"methods": [], "properties": {}},
     "QQ": {"methods": [], "properties": {}},
+    "RR": {"methods": [], "properties": {}},
+    "CC": {"methods": [], "properties": {}},
     "Zmod": {"methods": [], "properties": {}},
     "GF": {"methods": [], "properties": {}},
     "PolynomialRing": {"methods": [], "properties": {}},

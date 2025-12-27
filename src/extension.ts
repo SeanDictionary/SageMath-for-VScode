@@ -36,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
 
             const filePath = editor.document.uri.fsPath;
             const dirpath = dirname(filePath);
-            const command = `cd '${dirpath}' && ${SageMathPath} '${filePath}'`;
+            const command = `cd '${dirpath}' && ${SageMathPath} '${filePath}'; rm -f '${filePath}.py'`;
             const terminalName = !condaEnvPath ? 'SageMath' : `SageMath (${condaEnvName})`;
 
             let terminal = vscode.window.terminals.find(t => t.name === terminalName);
@@ -50,7 +50,7 @@ export function activate(context: vscode.ExtensionContext) {
                 }
             }
 
-            terminal.show();
+            terminal.show(true);
             terminal.sendText(command);
         });
     });

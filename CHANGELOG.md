@@ -4,15 +4,26 @@ All notable changes to the "sagemath" extension will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 2025-12-27
+
+### Fixed
+
+-   Fix [#4](https://github.com/SeanDictionary/SageMath-for-VScode/issues/4)
+
+### Added
+
+-   Auto-remove `.sage.py` files after running SageMath
+-   Add something to `predefinition.py`
+
 ## [1.1.2] - 2025-11-05
 
 ### Fixed
 
--   Fix [#1](https://github.com/SeanDictionary/SageMath-for-VScode/issues/1)
+-   Fix [#1](https://github.com/SeanDictionary/SageMath-for-VScode/issues/1) in [#3](https://github.com/SeanDictionary/SageMath-for-VScode/issues/3)
 
 ### Changed
 
--   Using sage -python to start LSP server [#2](https://github.com/SeanDictionary/SageMath-for-VScode/issues/2)
+-   Using sage -python to start LSP server [#2](https://github.com/SeanDictionary/SageMath-for-VScode/issues/2) in [#3](https://github.com/SeanDictionary/SageMath-for-VScode/issues/3)
 
 ### Added
 
