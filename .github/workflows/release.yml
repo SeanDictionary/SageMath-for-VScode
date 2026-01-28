@@ -1,0 +1,241 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        description: 'Pre-release version suffix (e.g., alpha.1, beta.2, rc.1)'
+        required: false
+        type: string
+      dry_run:
+        description: 'Dry run (package only, no publish)'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      is_prerelease: ${{ steps.version.outputs.is_prerelease }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract and validate version
+        id: version
+        run: |
+          # Get version from package.json
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          echo "Package version: $PACKAGE_VERSION"
+          
+          # Get version from pyproject.toml
+          PYPROJECT_VERSION=$(grep -oP 'version = "\K[^"]+' src/server/pyproject.toml)
+          echo "Pyproject version: $PYPROJECT_VERSION"
+          
+          # Check if versions match
+          if [ "$PACKAGE_VERSION" != "$PYPROJECT_VERSION" ]; then
+            echo "::error::Version mismatch! package.json: $PACKAGE_VERSION, pyproject.toml: $PYPROJECT_VERSION"
+            exit 1
+          fi
+          
+          # For tag-triggered releases, validate tag matches version
+          if [ "${{ github.event_name }}" == "push" ]; then
+            TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+            if [ "$TAG_VERSION" != "$PACKAGE_VERSION" ]; then
+              echo "::error::Tag version ($TAG_VERSION) doesn't match package.json version ($PACKAGE_VERSION)"
+              exit 1
+            fi
+          fi
+          
+          # Handle pre-release suffix for manual triggers
+          FINAL_VERSION="$PACKAGE_VERSION"
+          IS_PRERELEASE="false"
+          if [ -n "${{ inputs.prerelease }}" ]; then
+            FINAL_VERSION="${PACKAGE_VERSION}-${{ inputs.prerelease }}"
+            IS_PRERELEASE="true"
+          elif [[ "$PACKAGE_VERSION" == *"-"* ]]; then
+            IS_PRERELEASE="true"
+          fi
+          
+          echo "version=$FINAL_VERSION" >> $GITHUB_OUTPUT
+          echo "is_prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
+          echo "Final version: $FINAL_VERSION (prerelease: $IS_PRERELEASE)"
+
+      - name: Validate CHANGELOG entry
+        if: github.event_name == 'push'
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          if ! grep -q "\[$VERSION\]" CHANGELOG.md; then
+            echo "::warning::No CHANGELOG entry found for version $VERSION"
+          fi
+
+  test:
+    runs-on: ubuntu-latest
+    needs: validate
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Compile TypeScript
+        run: npm run compile
+
+      - name: Run TypeScript tests
+        run: xvfb-run -a npm test
+
+      - name: Run Python tests
+        run: |
+          cd src/server
+          uv sync --dev
+          uv run pytest tests/ -v
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [validate, test]
+    outputs:
+      vsix_name: ${{ steps.package.outputs.vsix_name }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install vsce
+        run: npm install -g @vscode/vsce
+
+      - name: Compile TypeScript
+        run: npm run compile
+
+      - name: Update version for pre-release
+        if: inputs.prerelease != ''
+        run: |
+          npm version ${{ needs.validate.outputs.version }} --no-git-tag-version --allow-same-version
+
+      - name: Package extension
+        id: package
+        run: |
+          vsce package --no-yarn
+          VSIX_NAME=$(ls *.vsix)
+          echo "vsix_name=$VSIX_NAME" >> $GITHUB_OUTPUT
+          echo "Packaged: $VSIX_NAME"
+
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension-vsix
+          path: "*.vsix"
+          retention-days: 30
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [validate, build]
+    if: ${{ !inputs.dry_run }}
+    
+    steps:
+      - name: Download VSIX artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: extension-vsix
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "*.vsix"
+          generate_release_notes: true
+          prerelease: ${{ needs.validate.outputs.is_prerelease == 'true' }}
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && format('v{0}', needs.validate.outputs.version) || github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: [validate, build, release]
+    if: ${{ !inputs.dry_run && needs.validate.outputs.is_prerelease != 'true' }}
+    
+    steps:
+      - name: Download VSIX artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: extension-vsix
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install vsce and ovsx
+        run: npm install -g @vscode/vsce ovsx
+
+      - name: Publish to VS Code Marketplace
+        run: vsce publish --packagePath *.vsix -p ${{ secrets.VSCE_PAT }}
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
+      - name: Publish to Open VSX Registry
+        run: ovsx publish -p ${{ secrets.OVSX_PAT }} *.vsix
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        continue-on-error: true
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [validate, build, release, publish]
+    if: always() && !inputs.dry_run
+    
+    steps:
+      - name: Summary
+        run: |
+          echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ needs.validate.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Pre-release**: ${{ needs.validate.outputs.is_prerelease }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **VSIX**: ${{ needs.build.outputs.vsix_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ needs.release.result }}" == "success" ]; then
+            echo "✅ GitHub Release created" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ GitHub Release failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ "${{ needs.publish.result }}" == "success" ]; then
+            echo "✅ Published to marketplaces" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ needs.publish.result }}" == "skipped" ]; then
+            echo "⏭️ Marketplace publish skipped (pre-release)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Marketplace publish failed" >> $GITHUB_STEP_SUMMARY
+          fi

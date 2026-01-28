@@ -4,6 +4,75 @@ All notable changes to the "sagemath" extension will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-01-28
+
+### Added
+- **Code Snippets**: 70+ code snippets for common SageMath patterns
+  - Number theory: `factor`, `gcd`, `xgcd`, `crt`, `invmod`, `powmod`, `dlog`
+  - Linear algebra: `mat`, `lll`, `bkz`, `kernel`, `eigen`, `jordan`
+  - Cryptography: `rsa`, `wiener`, `hastad`, `pohlig`, `copper`
+  - Elliptic curves: `ec`, `ecpoint`, `ecrand`
+  - Symbolic: `var`, `solve`, `diff`, `integrate`, `limit`, `taylor`
+  - And many more...
+
+- **New Commands**:
+  - `Run Selected Code` (Shift+Enter) - Execute selected code in interactive SageMath
+  - `Open SageMath Documentation` (Ctrl+Shift+D) - Search official docs
+  - `Insert Docstring Template` (Ctrl+Shift+/) - Generate docstring for functions
+  - `Show LSP Status` - Display LSP server status and features
+
+- **Enhanced Auto-Completion**:
+  - User-defined symbols (functions, classes, variables) now appear in completions
+  - Symbols from current file are prioritized
+  - Type inference for common SageMath types (Matrix, EllipticCurve, etc.)
+  - Completion resolve provider for lazy documentation loading
+
+- **Document Symbols (Outline View)**:
+  - Functions, classes, and variables appear in the outline
+  - SageMath-specific patterns recognized (e.g., `R.<x> = PolynomialRing(...)`)
+  - Symbolic variables from `var('x y z')` detected
+
+- **Folding Ranges**:
+  - Fold functions, classes, loops, conditionals
+  - Fold comment blocks and docstrings
+
+- **Code Actions (Quick Fixes)**:
+  - Add missing imports for common modules
+  - Fix typos with "Did you mean..." suggestions
+  - Convert tabs to spaces
+  - Fix assignment in condition (`=` → `==`)
+  - Generate docstring template
+
+- **Rename Symbol**:
+  - Rename user-defined symbols across the document
+  - Validation prevents renaming keywords and builtins
+
+- **Inlay Hints** (optional):
+  - Show inferred types for variables
+  - Enable in settings: `sagemath-for-vscode.inlayHints.enabled`
+
+### Changed
+- LSP version updated to 1.4.0
+- Completion now includes `resolve_provider` for better performance
+- Improved type inference for SageMath objects
+
+### New Configuration Options
+- `completion.enabled` - Enable/disable code completion
+- `completion.maxItems` - Maximum completion items (default: 100)
+- `completion.showSnippets` - Show snippets in completion
+- `completion.showUserSymbols` - Show user-defined symbols
+- `diagnostics.enabled` - Enable/disable diagnostics
+- `diagnostics.undefinedCheck` - Check undefined variables
+- `diagnostics.indentationCheck` - Check mixed indentation
+- `diagnostics.maxProblems` - Maximum problems to report
+- `run.autoSave` - Auto-save before running
+- `run.clearTerminal` - Clear terminal before run
+- `run.showExecutionTime` - Show execution time
+- `hover.showExamples` - Show examples in hover
+- `hover.showDocLink` - Show documentation links
+- `inlayHints.enabled` - Enable inlay hints
+- `inlayHints.showTypes` - Show type hints
+
 ## [1.1.3] - 2025-12-27
 
 ### Fixed

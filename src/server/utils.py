@@ -1,8 +1,10 @@
-import copy
-import time
-import attrs
-import re
+from __future__ import annotations
 
+import time
+import re
+from typing import Callable, Optional
+
+import attrs
 from pygls.server import LanguageServer
 from pygls.workspace import TextDocument
 
@@ -39,34 +41,41 @@ class Logging:
         self._log("Error", message)
 
 
-# Refference from offical documents
+# Reference from official documents
 # https://pygls.readthedocs.io/en/latest/servers/examples/semantic-tokens.html
 
-# For split tokens
+# Pre-compiled regex patterns for tokenization (module-level for performance)
 SYMBOL = re.compile(r"[A-Za-z_]\w*")
-NUMBER = re.compile(r"(\d+(\.\d+)?[eE][-+]?\d+)|(\d+(\.\d+)?)|0[bB][01]+|0[oO][0-7]+0[xX][0-9a-fA-F]+")
+NUMBER = re.compile(r"(\d+(\.\d+)?[eE][-+]?\d+)|(\d+(\.\d+)?)|0[bB][01]+|0[oO][0-7]+|0[xX][0-9a-fA-F]+")
 OP = re.compile(r"(//|\^\^|==|!=|<=|>=|->|[-+*/%=<>.,:;\(\)\[\]{}\^\|\&])")
 SPACE = re.compile(r"\s+")
 COMMENT = re.compile(r"#.*$")
 BLOCK_STRING_BEGIN = re.compile(r"('''|\"\"\").*$")
 BLOCK_STRING_END = re.compile(r".*('''|\"\"\")")
 LINE_STRING = re.compile(r"('(.*?)')|('''(.*?)''')|(\"(.*?)\")|(\"\"\"(.*?)\"\"\")")
+MATCH_ALL_LINE = re.compile(r"^.*$")
 
 
 @attrs.define
 class Token:
+    """Represents a semantic token with position and classification info."""
     line: int
     offset: int
-    text: int | str
+    text: str
 
     tok_type: str = ""
-    tok_modifiers: list[str] = []
+    tok_modifiers: list[str] = attrs.Factory(list)
 
     def __str__(self) -> str:
         return f"{self.line}:{self.offset} {self.text!r} {self.tok_type} {self.tok_modifiers}"
 
 
 class SemanicSever(LanguageServer):
+    """Custom Language Server with semantic token parsing capabilities."""
+    
+    log_level: str
+    log: Logging
+
     def __init__(self, name: str, version: str, log_level: str = "info") -> None:
         super().__init__(name=name, version=version)
         self.log_level = log_level
@@ -147,10 +156,10 @@ class SemanicSever(LanguageServer):
                             line = line[match.end():]
                             break
                         else:
-                            match = re.compile(r"^.*$").match(line)
-                            # add_token("string")
-                            current_offset += len(match.group(0))
-                            line = line[match.end():]
+                            match = MATCH_ALL_LINE.match(line)
+                            if match:
+                                current_offset += len(match.group(0))
+                                line = line[match.end():]
                             current_line += 1
 
                 elif (match := LINE_STRING.match(line)) is not None:
@@ -178,11 +187,11 @@ class SemanicSever(LanguageServer):
 
     def classify_tokens(self, tokens: list[Token]) -> None:
         """Classify tokens into types and modifiers."""
-
-        function_names = copy.deepcopy(FUNCTIONS)
-        class_names = copy.deepcopy(CLASSES)
-        variable_names = dict()
-        const_names = set()
+        # Use shallow copy for immutable items, deep copy structure for mutable nested dicts
+        function_names: set[str] = set(FUNCTIONS)
+        class_names: dict[str, dict] = {k: {"methods": list(v["methods"]), "properties": dict(v["properties"])} for k, v in CLASSES.items()}
+        variable_names: dict[str, str] = {}
+        const_names: set[str] = set()
 
         for i, token in enumerate(tokens):
             # Skip tokens that are already classified
