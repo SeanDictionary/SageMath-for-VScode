@@ -2,12 +2,14 @@
 
 ## 1. Core Summary
 
-The LSP server maintains predefined definitions for 93 SageMath functions and 45 classes to provide accurate semantic highlighting. These definitions include method and property names for class member access recognition.
+The LSP server maintains predefined definitions for 150+ SageMath functions and 45 classes with methods and properties. These definitions enable semantic highlighting, code completion, and documentation lookup. Enhanced by comprehensive documentation database in `documentation.py` with signatures, parameters, examples.
 
 ## 2. Source of Truth
 
 - **Primary Code:** `src/server/predefinition.py:1-193` - Complete function and class definitions
+- **Documentation:** `src/server/documentation.py:28-561` - Detailed function/method documentation with signatures and examples
 - **Usage:** `src/server/utils.py:188-193` - Library lookup during token classification
+- **Usage:** `src/server/lsp.py:328-433` - Completion and hover handlers
 - **External Reference:** https://doc.sagemath.org/html/en/reference/index.html - Official SageMath documentation
 
 ### Predefined Functions (93)

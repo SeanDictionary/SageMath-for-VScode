@@ -7,29 +7,38 @@
 
 ## 2. Core Components
 
-- `package.json` (contributes, activationEvents): Extension manifest defining commands, keybindings, and entry point `./out/extension.js`.
+- `package.json` (contributes, activationEvents): Extension manifest defining 11 commands, keybindings, and entry point `./out/extension.js`.
 - `src/extension.ts` (activate, deactivate): Main extension lifecycle handlers managing initialization and cleanup.
 - `src/extension.ts` (startLSP): LanguageClient initialization with stdio transport to Python server.
 - `src/extension.ts` (createEnvLSP, installRequirements): Virtual environment setup for LSP server dependencies.
+- `src/sageDiscovery.ts` (runSetupWizard, checkSageStatus, discoverSageInstallations): SageMath installation detection and setup.
 
 ## 3. Execution Flow (LLM Retrieval Map)
 
 **Activation Phase:**
 - **Entry Point:** VS Code loads `out/extension.js` compiled from `src/extension.ts` (no explicit activation events, commands trigger activation).
-- **Command Registration:** `activate()` function (`src/extension.ts:125-347`) registers three commands:
-  - `sagemath-for-vscode.runSageMath` - File execution handler
-  - `sagemath-for-vscode.selectCondaEnv` - Conda environment selector
-  - `sagemath-for-vscode.restartLSP` - LSP restart handler
-- **LSP Initialization:** Checks `sagemath-for-vscode.LSP.useSageMathLSP` setting (`src/extension.ts:244`).
-- **Environment Setup:** If `src/server/envLSP/` missing, prompts for Conda environment, creates venv via `sage -python -m venv` (`src/extension.ts:252-292`).
-- **Server Start:** Calls `startLSP()` which creates LanguageClient with Python interpreter executing `src/server/lsp.py` (`src/extension.ts:202-241`).
-- **Status Bar:** Creates Conda environment selection button visible for `.sage` files (`src/extension.ts:327-346`).
+- **Command Registration:** `activate()` function (`src/extension.ts:132-510`) registers 11 commands:
+  - `runSageMath` - Execute entire .sage file (F5)
+  - `runSelectedCode` - Execute selected code in interactive mode (Shift+Enter)
+  - `openDocumentation` - Open SageMath docs (Ctrl+Shift+D)
+  - `insertDocstring` - Insert docstring template (Ctrl+Shift+/)
+  - `showLSPStatus` - Display LSP server state
+  - `setupWizard` - First-time setup wizard
+  - `checkSageStatus` - Validate SageMath installation
+  - `discoverSage` - Auto-detect SageMath installations
+  - `showInstallGuide` - Display installation instructions
+  - `selectCondaEnv` - Conda environment selector
+  - `restartLSP` - LSP restart handler
+- **LSP Initialization:** Checks `sagemath-for-vscode.LSP.useSageMathLSP` setting.
+- **Environment Setup:** If `src/server/envLSP/` missing, creates venv via `sage -python -m venv` and installs dependencies.
+- **Server Start:** Calls `startLSP()` which creates LanguageClient with Python interpreter executing `src/server/lsp.py`.
+- **Status Bar:** Creates Conda environment selection button visible for `.sage` files.
 
 **Deactivation Phase:**
-- **Cleanup:** `deactivate()` function (`src/extension.ts:350-355`) stops LanguageClient if running.
+- **Cleanup:** `deactivate()` function stops LanguageClient if running.
 
 **Configuration Monitoring:**
-- Watches `sagemath-for-vscode.LSP.LSPLogLevel` changes and sends custom `sagemath/loglevel` notification to server (`src/extension.ts:232-240`).
+- Watches `sagemath-for-vscode.LSP.LSPLogLevel` changes and sends custom `sagemath/loglevel` notification to server.
 
 ## 4. Design Rationale
 

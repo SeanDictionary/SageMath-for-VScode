@@ -14,13 +14,15 @@ This index provides a complete navigation map of the project documentation, orga
 
 ### Core Extension Architecture
 
-- [`extension-overview`](architecture/extension-overview.md) - Extension subsystems, command registration, and LSP client management
+- [`extension-overview`](architecture/extension-overview.md) - Extension subsystems, command registration (11 commands), and LSP client management
 - [`extension-lifecycle`](architecture/extension-lifecycle.md) - Activation flow, command registration, and LSP initialization sequence
-- [`terminal-integration`](architecture/terminal-integration.md) - Terminal management, Conda environment activation, and SageMath file execution
+- [`terminal-integration`](architecture/terminal-integration.md) - Terminal management, Conda environment activation, and SageMath file/selection execution
+- [`sage-discovery`](architecture/sage-discovery.md) - Cross-platform SageMath installation detection, setup wizard, and configuration
 
 ### Language Server Protocol (LSP)
 
-- [`lsp-overview`](architecture/lsp-overview.md) - Python-based LSP server architecture and single-pass analysis pipeline
+- [`lsp-overview`](architecture/lsp-overview.md) - Python-based LSP server architecture and modular feature set
+- [`lsp-capabilities`](architecture/lsp-capabilities.md) - Complete LSP protocol handlers: completion, hover, signature help, navigation, diagnostics, code actions
 - [`lexical-analysis`](architecture/lexical-analysis.md) - Tokenization engine using regex patterns and delta encoding
 - [`semantic-analysis`](architecture/semantic-analysis.md) - Single-pass classification algorithm for symbols, functions, classes, and variables
 - [`semantic-tokens`](architecture/semantic-tokens.md) - Token encoding format and LSP transmission protocol
@@ -37,7 +39,8 @@ This index provides a complete navigation map of the project documentation, orga
 ### Development Setup
 
 - [`how-to-setup-development`](guides/how-to-setup-development.md) - Clone repository, install dependencies, and launch Extension Development Host
-- [`how-to-build-and-package`](guides/how-to-build-and-package.md) - Build TypeScript extension and package VSIX file
+- [`how-to-build-and-package`](guides/how-to-build-and-package.md) - Format check, lint, compile, test (TypeScript + Python), and package VSIX
+- [`how-to-create-release`](guides/how-to-create-release.md) - Version bump, CHANGELOG update, tag creation, and automated release workflow
 
 ### LSP and Semantic Analysis
 
@@ -48,6 +51,10 @@ This index provides a complete navigation map of the project documentation, orga
 
 - [`how-to-extend-commands`](guides/how-to-extend-commands.md) - Add new commands to `package.json` and implement handlers in `extension.ts`
 - [`how-to-add-sagemath-definitions`](guides/how-to-add-sagemath-definitions.md) - Extend SageMath standard library definitions in `predefinition.py`
+
+### User Features
+
+- [`how-to-use-setup-wizard`](guides/how-to-use-setup-wizard.md) - First-time setup wizard for SageMath installation detection and configuration
 
 ---
 
@@ -60,15 +67,18 @@ This index provides a complete navigation map of the project documentation, orga
 
 ### Configuration and Build
 
-- [`npm-scripts`](reference/npm-scripts.md) - Available npm scripts for building, watching, testing, and packaging
+- [`configuration-settings`](reference/configuration-settings.md) - Complete configuration schema for execution, LSP, completion, diagnostics, run behavior, hover, and inlay hints
+- [`npm-scripts`](reference/npm-scripts.md) - Available npm scripts for building, watching, testing (TypeScript + Python with uv/pytest), packaging, and version management
+- [`python-project-config`](reference/python-project-config.md) - Python LSP server configuration: pyproject.toml, uv.lock, pytest.ini, dependencies, and version synchronization
 - [`ci-workflows`](reference/ci-workflows.md) - GitHub Actions workflow definitions for automated testing and deployment
 - [`code-quality-tools`](reference/code-quality-tools.md) - ESLint, Prettier, and EditorConfig configuration for code quality enforcement
-- [`testing-infrastructure`](reference/testing-infrastructure.md) - Integration testing setup using @vscode/test-electron
+- [`testing-infrastructure`](reference/testing-infrastructure.md) - Comprehensive testing: VS Code tests (@vscode/test-electron) and Python LSP tests (pytest + uv)
 
 ### SageMath Language Support
 
 - [`sagemath-token-types`](reference/sagemath-token-types.md) - LSP token types and modifiers (14 types, 6 modifiers) with encoding format
 - [`sagemath-standard-library`](reference/sagemath-standard-library.md) - Predefined SageMath functions (150+) and classes (30+) for semantic recognition
+- [`sagemath-documentation`](reference/sagemath-documentation.md) - Documentation database with 50+ function and 150+ method signatures, parameters, and examples
 
 ---
 
@@ -84,5 +94,5 @@ This index is automatically synchronized with the `/llmdoc` directory structure.
 ---
 
 **Last Updated:** 2026-01-28
-**Documentation Version:** 1.1
-**Project:** SageMath for VS Code v1.3.0
+**Documentation Version:** 1.5
+**Project:** SageMath for VS Code v1.4.0

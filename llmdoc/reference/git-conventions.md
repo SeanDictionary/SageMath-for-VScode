@@ -10,6 +10,9 @@ This project follows a GitHub-centric workflow using pull requests for integrati
 
 - **Primary Git Workflow:** `git log` - Evidence of PR-based merges from `dev` to `main` branches
 - **Commit Message Format:** `docs/CONTRIBUTING.md` - Conventional Commits specification with defined types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`. Example: `feat: add auto-completion for SageMath functions`
-- **Version Management:** `package.json` - Current version stored in version field (currently 1.3.0)
+- **Version Management:** `package.json`, `src/server/pyproject.toml` - Version must match in both files for release
 - **Release Documentation:** `CHANGELOG.md` - Maintained using Keep a Changelog format with semantic versioning
 - **Branch Structure:** `git branch -a` - Main branches: `main` (production), `dev` (development), `rebuild` (build artifacts)
+- **Issue Templates:** `.github/ISSUE_TEMPLATE/bug_report.yml`, `.github/ISSUE_TEMPLATE/feature_request.yml` - Structured issue reporting
+- **PR Template:** `.github/PULL_REQUEST_TEMPLATE.md` - Standardized PR format with checklist
+- **Release Automation:** `.github/workflows/release.yml` - Automated release and marketplace publishing

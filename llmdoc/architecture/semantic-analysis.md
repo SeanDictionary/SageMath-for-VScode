@@ -3,11 +3,12 @@
 ## 1. Identity
 
 - **What it is:** Single-pass token classification algorithm using pattern matching on sequential context.
-- **Purpose:** Identifies and classifies symbols as functions, classes, methods, variables, properties, and constants.
+- **Purpose:** Identifies and classifies symbols as functions, classes, methods, variables, properties, and constants for semantic highlighting and completion.
 
 ## 2. Core Components
 
 - `src/server/utils.py:188-372` (SemanicSever.classify_tokens): Classification engine implementing recognition patterns.
+- `src/server/symbols.py:86-182` (SymbolExtractor.extract_symbols): Alternative symbol extraction for outline, navigation, and type inference.
 - `src/server/predefinition.py:17-93` (FUNCTIONS): Set of 150+ predefined SageMath function names.
 - `src/server/predefinition.py:96-192` (CLASSES): Dictionary of 30+ classes with methods and properties.
 - `src/server/predefinition.py:6-11` (KEYWORDS): Python keyword set for pattern matching.

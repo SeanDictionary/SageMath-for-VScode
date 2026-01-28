@@ -2,38 +2,47 @@
 
 ## 1. Core Summary
 
-Integration testing framework using `@vscode/test-electron` to verify extension activation, command registration, language configuration, and settings within a VS Code environment.
+Comprehensive testing framework covering both VS Code extension (TypeScript) and LSP server (Python) using `@vscode/test-electron` and `pytest` with `uv` package manager.
 
 ## 2. Source of Truth
 
-- **Test Runner**: `src/test/runTest.ts` - Entry point that launches VS Code and runs test suite
-- **Test Suite**: `src/test/suite/extension.test.ts` - Integration tests for extension behavior
-- **Test Config**: `package.json:162-163` - `pretest` and `test` npm scripts
-- **Framework**: `@vscode/test-electron` - Official VS Code extension testing framework
+### VS Code Extension Tests
+- **Test Runner**: `src/test/runTest.ts` - Entry point launching VS Code Extension Development Host
+- **Test Index**: `src/test/suite/index.ts` - Mocha test runner configuration
+- **Test Suites**:
+  - `extension.test.ts` - Basic activation and command registration
+  - `extension.test.extended.ts` - Extended functionality tests
+  - `lsp.test.ts` - LSP client initialization
+  - `lsp.e2e.test.ts` - End-to-end LSP communication
+  - `lsp.integration.test.ts` - LSP integration scenarios
+  - `sageDiscovery.test.ts` - SageMath installation discovery
+- **Helpers**: `src/test/suite/lsp-helpers.ts` - Fixtures and utility functions
 
-## Test Structure
-
-**runTest.ts** (`src/test/runTest.ts`):
-- Resolves extension development path (project root)
-- Resolves test runner path (`src/test/suite/index`)
-- Invokes `runTests()` to download VS Code and execute tests
-
-**extension.test.ts** (`src/test/suite/extension.test.ts`):
-- Suite 1: Extension Test Suite
-  - Extension presence verification
-  - Activation verification
-  - Command registration (`runSageMath`, `restartLSP`, `selectCondaEnv`)
-  - Language configuration (`sagemath` language ID)
-  - Configuration settings (`sage.path`, `sage.condaEnvPath`, `LSP.useSageMathLSP`, `LSP.LSPLogLevel`)
-- Suite 2: SageMath Language Support
-  - `.sage` file extension recognition
+### Python LSP Server Tests
+- **Pytest Config**: `src/server/pyproject.toml:20-30` - Test configuration with markers and coverage
+- **Test Fixtures**: `src/server/tests/conftest.py` - Mock documents and server instances
+- **Test Suites**:
+  - `test_lsp.py` - LSP server lifecycle and initialization
+  - `test_lsp_protocol.py` - LSP protocol message handling
+  - `test_code_actions.py` - Code action providers
+  - `test_documentation.py` - Hover documentation
+  - `test_symbols.py` - Symbol resolution (go-to-definition)
+  - `test_utils.py` - Tokenization and classification utilities
+  - `test_predefinition.py` - SageMath standard library definitions
 
 ## Execution
 
-**Local**: Run `npm test` (compiles TypeScript first via `pretest` hook)
+**VS Code Tests**: `npm test` (runs TypeScript tests via `@vscode/test-electron`)
 
-**CI**: GitHub Actions runs `xvfb-run -a npm test` on Linux (`.github/workflows/ci.yml:37`)
+**Python Tests**:
+- `npm run test:python:setup` - Initial setup with `uv`
+- `npm run test:python` - Run pytest tests
+- `npm run test:python:cov` - Run with coverage report
 
-## TypeScript Configuration
+**All Tests**: `npm run test:all` (sequential execution)
 
-Test files use `tsconfig.json` with `strict: true`, `module: "Node16"`, and `types: ["node", "mocha"]`.
+## Test Coverage
+
+VS Code tests verify: Extension activation, command registration, language configuration, settings, LSP client startup
+
+Python tests verify: Tokenization, semantic classification, LSP protocol compliance, SageMath definitions
