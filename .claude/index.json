@@ -1,0 +1,228 @@
+{
+  "timestamp": "2026-01-28T22:12:01Z",
+  "project": {
+    "name": "sagemath-for-vscode",
+    "version": "1.1.3",
+    "type": "vscode-extension",
+    "languages": ["TypeScript", "Python", "JSON"],
+    "repository": "https://github.com/SeanDictionary/SageMath-for-VScode.git"
+  },
+  "scan": {
+    "tool": "claude-architect",
+    "version": "1.0.0",
+    "total_files_estimated": 17,
+    "files_scanned": 17,
+    "coverage_percentage": 100,
+    "truncated": false
+  },
+  "ignore_rules": {
+    "source": ".gitignore merged with defaults",
+    "patterns": [
+      "node_modules/**",
+      ".git/**",
+      ".github/**",
+      "dist/**",
+      "build/**",
+      ".next/**",
+      "__pycache__/**",
+      "*.lock",
+      "*.log",
+      "*.bin",
+      "*.pdf",
+      "*.png",
+      "*.jpg",
+      "*.jpeg",
+      "*.gif",
+      "*.mp4",
+      "*.zip",
+      "*.tar",
+      "*.gz",
+      "*.vsix",
+      "*.py[cod]",
+      "*$py.class",
+      "**/envLSP",
+      "notebook.md",
+      ".ace-tool/"
+    ]
+  },
+  "modules": [
+    {
+      "path": "src/",
+      "name": "扩展入口模块",
+      "language": "TypeScript",
+      "entry": "extension.ts",
+      "responsibilities": [
+        "VS Code 扩展激活与停用",
+        "命令注册 (runSageMath, restartLSP, selectCondaEnv)",
+        "LSP 客户端管理",
+        "Conda 环境管理",
+        "终端集成",
+        "状态栏 UI"
+      ],
+      "key_files": [
+        "src/extension.ts"
+      ],
+      "has_tests": false,
+      "coverage": {
+        "entry": true,
+        "interfaces": true,
+        "data_models": true,
+        "tests": false,
+        "documentation": true
+      }
+    },
+    {
+      "path": "src/server/",
+      "name": "LSP 服务器模块",
+      "language": "Python",
+      "entry": "lsp.py",
+      "responsibilities": [
+        "LSP 协议处理",
+        "词法分析",
+        "语义分类",
+        "SageMath 标准库定义",
+        "日志系统"
+      ],
+      "key_files": [
+        "src/server/lsp.py",
+        "src/server/utils.py",
+        "src/server/predefinition.py",
+        "src/server/requirements.txt"
+      ],
+      "has_tests": false,
+      "coverage": {
+        "entry": true,
+        "interfaces": true,
+        "data_models": true,
+        "tests": false,
+        "documentation": true
+      }
+    },
+    {
+      "path": "syntaxes/",
+      "name": "语法高亮模块",
+      "language": "JSON",
+      "entry": "sagemath.tmLanguage.json",
+      "responsibilities": [
+        "TextMate 语法定义",
+        "语法高亮规则"
+      ],
+      "key_files": [
+        "syntaxes/sagemath.tmLanguage.json"
+      ],
+      "has_tests": false,
+      "coverage": {
+        "entry": true,
+        "interfaces": false,
+        "data_models": false,
+        "tests": false,
+        "documentation": false
+      }
+    },
+    {
+      "path": "docs/",
+      "name": "文档模块",
+      "language": "Markdown",
+      "entry": null,
+      "responsibilities": [
+        "用户文档",
+        "贡献指南",
+        "功能说明"
+      ],
+      "key_files": [
+        "docs/README-zh-CN.md",
+        "docs/CONTRIBUTING.md",
+        "docs/SemanticHighlighting-en.md"
+      ],
+      "has_tests": false,
+      "coverage": {
+        "entry": false,
+        "interfaces": false,
+        "data_models": false,
+        "tests": false,
+        "documentation": true
+      }
+    },
+    {
+      "path": ".vscode/",
+      "name": "开发配置模块",
+      "language": "JSON",
+      "entry": null,
+      "responsibilities": [
+        "调试配置",
+        "任务配置",
+        "设置"
+      ],
+      "key_files": [
+        ".vscode/launch.json",
+        ".vscode/tasks.json",
+        ".vscode/settings.json"
+      ],
+      "has_tests": false,
+      "coverage": {
+        "entry": false,
+        "interfaces": false,
+        "data_models": false,
+        "tests": false,
+        "documentation": false
+      }
+    }
+  ],
+  "gaps": [
+    {
+      "module": "src/",
+      "missing": ["tests"],
+      "recommendation": "添加 VS Code 扩展测试 (使用 @vscode/test-electron)"
+    },
+    {
+      "module": "src/server/",
+      "missing": ["tests"],
+      "recommendation": "添加 Python 单元测试 (使用 pytest)"
+    },
+    {
+      "module": "syntaxes/",
+      "missing": ["documentation"],
+      "recommendation": "添加 TextMate 语法规则的说明文档"
+    }
+  ],
+  "next_steps": [
+    "为 src/extension.ts 添加单元测试",
+    "为 src/server/ 添加集成测试",
+    "完善语义分析算法 (支持多行链式调用)",
+    "添加代码补全 LSP 特性",
+    "优化大文件处理性能"
+  ],
+  "statistics": {
+    "total_lines": {
+      "extension.ts": 279,
+      "lsp.py": 61,
+      "utils.py": 379,
+      "predefinition.py": 28
+    },
+    "languages": {
+      "TypeScript": 1,
+      "Python": 3,
+      "JSON": 5,
+      "Markdown": 4
+    },
+    "commands_registered": 3,
+    "configuration_keys": 4,
+    "lsp_features": 2,
+    "sagemath_predefined_functions": 8,
+    "sagemath_predefined_classes": 11
+  },
+  "architecture": {
+    "pattern": "client-server",
+    "client": {
+      "language": "TypeScript",
+      "framework": "vscode-languageclient",
+      "entry": "src/extension.ts"
+    },
+    "server": {
+      "language": "Python",
+      "framework": "pygls",
+      "entry": "src/server/lsp.py",
+      "transport": "stdio"
+    }
+  }
+}

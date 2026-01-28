@@ -1,8 +1,95 @@
-node_modules
-out
+# =================================
+# VS Code Extension
+# =================================
+out/
 *.vsix
+.vscode-test/
+
+# =================================
+# Node.js
+# =================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+.yarn/
+
+# =================================
+# Python
+# =================================
+# Byte-compiled / optimized / DLL files
 *.py[cod]
 *$py.class
-**/__pycache__/
-**/envLSP
+__pycache__/
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env/
+**/envLSP/
+
+# pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Type checkers
+.mypy_cache/
+.pytype/
+
+# =================================
+# IDE / Editors
+# =================================
+# JetBrains
+.idea/
+
+# VS Code (keep .vscode/ for project settings)
+*.code-workspace
+
+# =================================
+# OS Generated
+# =================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# =================================
+# Build & Packaging
+# =================================
+dist/
+build/
+*.egg-info/
+
+# =================================
+# Logs & Temp Files
+# =================================
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# =================================
+# Project Specific
+# =================================
 notebook.md
+
+# =================================
+# AI / Tools
+# =================================
+.ace-tool/
+.augment/

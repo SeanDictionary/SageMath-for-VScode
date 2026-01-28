@@ -1,8 +1,8 @@
 {
     "name": "sagemath-for-vscode",
     "displayName": "SageMath for VScode",
-    "description": "An extension for SageMath support in VS Code. Includes highighting and run",
-    "version": "1.1.3",
+    "description": "Full-featured SageMath extension for VS Code. Includes syntax highlighting, code completion, hover documentation, signature help, diagnostics, go to definition, and more.",
+    "version": "1.4.0",
     "publisher": "SeanDictionary",
     "license": "AGPL-3.0",
     "repository": {
@@ -54,11 +54,22 @@
                 "path": "./syntaxes/sagemath.tmLanguage.json"
             }
         ],
+        "snippets": [
+            {
+                "language": "sagemath",
+                "path": "./snippets/sagemath.json"
+            }
+        ],
         "commands": [
             {
                 "command": "sagemath-for-vscode.runSageMath",
                 "title": "SageMath for VScode: Run SageMath File",
                 "icon": "$(play)"
+            },
+            {
+                "command": "sagemath-for-vscode.runSelectedCode",
+                "title": "SageMath for VScode: Run Selected Code",
+                "icon": "$(play-circle)"
             },
             {
                 "command": "sagemath-for-vscode.restartLSP",
@@ -69,12 +80,64 @@
                 "command": "sagemath-for-vscode.selectCondaEnv",
                 "title": "SageMath for VScode: Select Conda Environment",
                 "icon": "$(terminal)"
+            },
+            {
+                "command": "sagemath-for-vscode.openDocumentation",
+                "title": "SageMath for VScode: Open SageMath Documentation",
+                "icon": "$(book)"
+            },
+            {
+                "command": "sagemath-for-vscode.insertDocstring",
+                "title": "SageMath for VScode: Insert Docstring Template",
+                "icon": "$(comment)"
+            },
+            {
+                "command": "sagemath-for-vscode.showLSPStatus",
+                "title": "SageMath for VScode: Show LSP Status",
+                "icon": "$(info)"
+            },
+            {
+                "command": "sagemath-for-vscode.setupWizard",
+                "title": "SageMath for VScode: Setup Wizard",
+                "icon": "$(wand)"
+            },
+            {
+                "command": "sagemath-for-vscode.checkSageStatus",
+                "title": "SageMath for VScode: Check SageMath Status",
+                "icon": "$(search)"
+            },
+            {
+                "command": "sagemath-for-vscode.discoverSage",
+                "title": "SageMath for VScode: Discover SageMath Installations",
+                "icon": "$(search-fuzzy)"
+            },
+            {
+                "command": "sagemath-for-vscode.showInstallGuide",
+                "title": "SageMath for VScode: Installation Guide",
+                "icon": "$(cloud-download)"
             }
         ],
         "keybindings": [
             {
                 "command": "sagemath-for-vscode.runSageMath",
                 "key": "F5",
+                "when": "editorTextFocus && editorLangId == 'sagemath'"
+            },
+            {
+                "command": "sagemath-for-vscode.runSelectedCode",
+                "key": "shift+enter",
+                "when": "editorTextFocus && editorLangId == 'sagemath' && editorHasSelection"
+            },
+            {
+                "command": "sagemath-for-vscode.openDocumentation",
+                "key": "ctrl+shift+d",
+                "mac": "cmd+shift+d",
+                "when": "editorTextFocus && editorLangId == 'sagemath'"
+            },
+            {
+                "command": "sagemath-for-vscode.insertDocstring",
+                "key": "ctrl+shift+/",
+                "mac": "cmd+shift+/",
                 "when": "editorTextFocus && editorLangId == 'sagemath'"
             }
         ],
@@ -116,6 +179,100 @@
                     ],
                     "default": "info",
                     "markdownDescription": "Log level for the SageMath Language Server Protocol."
+                },
+                "sagemath-for-vscode.completion.enabled": {
+                    "title": "Enable Code Completion",
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Enable or disable code completion."
+                },
+                "sagemath-for-vscode.completion.maxItems": {
+                    "title": "Maximum Completion Items",
+                    "type": "number",
+                    "default": 100,
+                    "minimum": 10,
+                    "maximum": 500,
+                    "markdownDescription": "Maximum number of completion items to show."
+                },
+                "sagemath-for-vscode.completion.showSnippets": {
+                    "title": "Show Snippets in Completion",
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Include code snippets in completion suggestions."
+                },
+                "sagemath-for-vscode.completion.showUserSymbols": {
+                    "title": "Show User-Defined Symbols",
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Include user-defined functions, classes, and variables in completion."
+                },
+                "sagemath-for-vscode.diagnostics.enabled": {
+                    "title": "Enable Diagnostics",
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Enable or disable code diagnostics (error checking)."
+                },
+                "sagemath-for-vscode.diagnostics.undefinedCheck": {
+                    "title": "Check Undefined Variables",
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Show hints for potentially undefined variables."
+                },
+                "sagemath-for-vscode.diagnostics.indentationCheck": {
+                    "title": "Check Indentation",
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Warn about mixed tabs and spaces."
+                },
+                "sagemath-for-vscode.diagnostics.maxProblems": {
+                    "title": "Maximum Problems",
+                    "type": "number",
+                    "default": 100,
+                    "minimum": 10,
+                    "maximum": 1000,
+                    "markdownDescription": "Maximum number of problems to report."
+                },
+                "sagemath-for-vscode.run.autoSave": {
+                    "title": "Auto Save Before Run",
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Automatically save the file before running."
+                },
+                "sagemath-for-vscode.run.clearTerminal": {
+                    "title": "Clear Terminal Before Run",
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "Clear the terminal before running SageMath file."
+                },
+                "sagemath-for-vscode.run.showExecutionTime": {
+                    "title": "Show Execution Time",
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "Display execution time after running."
+                },
+                "sagemath-for-vscode.hover.showExamples": {
+                    "title": "Show Examples in Hover",
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Show usage examples in hover documentation."
+                },
+                "sagemath-for-vscode.hover.showDocLink": {
+                    "title": "Show Documentation Link",
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Show link to official SageMath documentation in hover."
+                },
+                "sagemath-for-vscode.inlayHints.enabled": {
+                    "title": "Enable Inlay Hints",
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "Show inline type hints for variables."
+                },
+                "sagemath-for-vscode.inlayHints.showTypes": {
+                    "title": "Show Type Hints",
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Show inferred types as inlay hints."
                 }
             }
         },
@@ -133,19 +290,61 @@
                 "editor.tabSize": 4,
                 "editor.insertSpaces": true,
                 "editor.suggest.insertMode": "replace",
-                "editor.semanticHighlighting.enabled": true
+                "editor.semanticHighlighting.enabled": true,
+                "editor.quickSuggestions": {
+                    "other": true,
+                    "comments": false,
+                    "strings": false
+                },
+                "editor.parameterHints.enabled": true,
+                "editor.hover.enabled": true
             }
+        },
+        "capabilities": {
+            "completionProvider": {
+                "triggerCharacters": [".", "("],
+                "resolveProvider": false
+            },
+            "hoverProvider": true,
+            "signatureHelpProvider": {
+                "triggerCharacters": ["(", ","]
+            },
+            "definitionProvider": true,
+            "referencesProvider": true
         }
     },
     "scripts": {
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
         "pretest": "npm run compile",
-        "test": "node ./out/test/runTest.js"
+        "test": "node ./out/test/runTest.js",
+        "test:python:setup": "cd src/server && uv sync --dev",
+        "test:python": "cd src/server && uv run pytest tests/ -v",
+        "test:python:cov": "cd src/server && uv run pytest tests/ -v --cov=. --cov-report=html",
+        "test:all": "npm run test:python && npm run test",
+        "lint": "eslint src --ext ts",
+        "lint:fix": "eslint src --ext ts --fix",
+        "format": "prettier --write \"src/**/*.ts\"",
+        "format:check": "prettier --check \"src/**/*.ts\"",
+        "prepackage": "npm run compile",
+        "package": "vsce package --no-yarn",
+        "package:check": "vsce ls --no-yarn",
+        "publish": "vsce publish",
+        "version:check": "node -e \"const p=require('./package.json').version;const py=require('fs').readFileSync('src/server/pyproject.toml','utf8').match(/version = \\\"([^\\\"]+)\\\"/)[1];if(p!==py){console.error('Version mismatch: package.json='+p+', pyproject.toml='+py);process.exit(1)}console.log('Versions match:',p)\"",
+        "version:sync": "node -e \"const v=require('./package.json').version;const f='src/server/pyproject.toml';let c=require('fs').readFileSync(f,'utf8');c=c.replace(/version = \\\"[^\\\"]+\\\"/,'version = \\\"'+v+'\\\"');require('fs').writeFileSync(f,c);console.log('Synced pyproject.toml to',v)\""
     },
     "devDependencies": {
-        "@types/node": "^24.0.1",
+        "@types/glob": "^8.1.0",
+        "@types/mocha": "^10.0.6",
+        "@types/node": "^20.11.0",
         "@types/vscode": "^1.100.0",
+        "@typescript-eslint/eslint-plugin": "^7.0.0",
+        "@typescript-eslint/parser": "^7.0.0",
+        "@vscode/test-electron": "^2.3.9",
+        "eslint": "^8.57.0",
+        "glob": "^10.3.10",
+        "mocha": "^10.3.0",
+        "prettier": "^3.2.5",
         "typescript": "~5.3.0"
     },
     "dependencies": {

@@ -1,9 +1,35 @@
 .vscode/**
 .vscode-test/**
-.gitignore
-*.py[cod]
-*$py.class
-src/*.ts
+.github/**
+docs/**
+examples/**
+src/**/*.ts
+src/test/**
+out/test/**
+node_modules/**
 **/__pycache__
 **/envLSP
+
+# Config files
+.gitignore
+.gitattributes
+.editorconfig
+.eslintrc.json
+.eslintignore
+.prettierrc
+.prettierignore
+tsconfig.json
+
+# Documentation
+*.md
+!README.md
+
+# Build artifacts
+*.py[cod]
+*$py.class
+*.map
+*.vsix
+
+# IDE
+.ace-tool/
 notebook.md

@@ -1,0 +1,603 @@
+{
+    "Polynomial Ring": {
+        "prefix": ["polyring", "polynomialring"],
+        "body": [
+            "R.<${1:x}> = PolynomialRing(${2|QQ,ZZ,GF(p),RR,CC|})",
+            "${0}"
+        ],
+        "description": "Create a polynomial ring with specified variable"
+    },
+    "Polynomial Ring Multi": {
+        "prefix": ["polyringmulti", "multivar"],
+        "body": [
+            "R.<${1:x}, ${2:y}> = PolynomialRing(${3|QQ,ZZ,GF(p)|}, order='${4|degrevlex,lex,deglex|}')",
+            "${0}"
+        ],
+        "description": "Create a multivariate polynomial ring"
+    },
+    "Finite Field": {
+        "prefix": ["gf", "finitefield"],
+        "body": [
+            "${1:F} = GF(${2:p})",
+            "${0}"
+        ],
+        "description": "Create a finite field GF(p)"
+    },
+    "Finite Field Extension": {
+        "prefix": ["gfext", "fieldext"],
+        "body": [
+            "${1:K}.<${2:a}> = GF(${3:2}^${4:8})",
+            "${0}"
+        ],
+        "description": "Create a finite field extension GF(p^n)"
+    },
+    "Matrix": {
+        "prefix": ["mat", "matrix"],
+        "body": [
+            "${1:M} = matrix(${2|ZZ,QQ,GF(p),RR|}, [",
+            "\t[${3:1, 0}],",
+            "\t[${4:0, 1}]",
+            "])",
+            "${0}"
+        ],
+        "description": "Create a matrix"
+    },
+    "Identity Matrix": {
+        "prefix": ["identity", "idmat"],
+        "body": [
+            "${1:I} = identity_matrix(${2|ZZ,QQ,GF(p)|}, ${3:n})",
+            "${0}"
+        ],
+        "description": "Create an identity matrix"
+    },
+    "Random Matrix": {
+        "prefix": ["randmat", "randommatrix"],
+        "body": [
+            "${1:M} = random_matrix(${2|ZZ,QQ,GF(p)|}, ${3:rows}, ${4:cols})",
+            "${0}"
+        ],
+        "description": "Create a random matrix"
+    },
+    "Elliptic Curve": {
+        "prefix": ["ec", "ellipticcurve"],
+        "body": [
+            "${1:E} = EllipticCurve(${2|GF(p),QQ,ZZ|}, [${3:a}, ${4:b}])",
+            "${0}"
+        ],
+        "description": "Create an elliptic curve y^2 = x^3 + ax + b"
+    },
+    "Elliptic Curve Point": {
+        "prefix": ["ecpoint", "curvepoint"],
+        "body": [
+            "${1:P} = ${2:E}(${3:x}, ${4:y})",
+            "${0}"
+        ],
+        "description": "Create a point on an elliptic curve"
+    },
+    "Elliptic Curve Random Point": {
+        "prefix": ["ecrand", "randompoint"],
+        "body": [
+            "${1:P} = ${2:E}.random_point()",
+            "${0}"
+        ],
+        "description": "Get a random point on an elliptic curve"
+    },
+    "LLL Reduction": {
+        "prefix": ["lll", "lattice"],
+        "body": [
+            "${1:M} = matrix(ZZ, [",
+            "\t${2:[1, 0, 0]},",
+            "\t${3:[0, 1, 0]},",
+            "\t${4:[0, 0, 1]}",
+            "])",
+            "${5:reduced} = ${1:M}.LLL()",
+            "${0}"
+        ],
+        "description": "LLL lattice reduction"
+    },
+    "BKZ Reduction": {
+        "prefix": ["bkz"],
+        "body": [
+            "${1:reduced} = ${2:M}.BKZ(block_size=${3:20})",
+            "${0}"
+        ],
+        "description": "BKZ lattice reduction (stronger than LLL)"
+    },
+    "Coppersmith Small Roots": {
+        "prefix": ["copper", "smallroots"],
+        "body": [
+            "# Coppersmith small roots",
+            "R.<${1:x}> = PolynomialRing(Zmod(${2:N}))",
+            "${3:f} = ${4:x + a}",
+            "${5:roots} = ${3:f}.small_roots(X=${6:bound}, beta=${7:0.5})",
+            "${0}"
+        ],
+        "description": "Coppersmith method for finding small roots"
+    },
+    "CRT": {
+        "prefix": ["crt", "chineseremainder"],
+        "body": [
+            "${1:result} = crt([${2:remainders}], [${3:moduli}])",
+            "${0}"
+        ],
+        "description": "Chinese Remainder Theorem"
+    },
+    "Inverse Mod": {
+        "prefix": ["invmod", "modinverse"],
+        "body": [
+            "${1:inv} = inverse_mod(${2:a}, ${3:m})",
+            "${0}"
+        ],
+        "description": "Modular multiplicative inverse"
+    },
+    "Power Mod": {
+        "prefix": ["powmod", "modpow"],
+        "body": [
+            "${1:result} = power_mod(${2:base}, ${3:exp}, ${4:mod})",
+            "${0}"
+        ],
+        "description": "Fast modular exponentiation"
+    },
+    "Discrete Log": {
+        "prefix": ["dlog", "discretelog"],
+        "body": [
+            "${1:x} = discrete_log(${2:a}, ${3:base})",
+            "${0}"
+        ],
+        "description": "Compute discrete logarithm"
+    },
+    "Extended GCD": {
+        "prefix": ["xgcd", "extgcd"],
+        "body": [
+            "${1:g}, ${2:s}, ${3:t} = xgcd(${4:a}, ${5:b})",
+            "# g = s*a + t*b",
+            "${0}"
+        ],
+        "description": "Extended Euclidean algorithm"
+    },
+    "Factor": {
+        "prefix": ["fact", "factor"],
+        "body": [
+            "${1:factors} = factor(${2:n})",
+            "${0}"
+        ],
+        "description": "Factor an integer or polynomial"
+    },
+    "Solve": {
+        "prefix": ["solve", "equation"],
+        "body": [
+            "var('${1:x}')",
+            "${2:solutions} = solve(${3:equation} == ${4:0}, ${1:x})",
+            "${0}"
+        ],
+        "description": "Solve symbolic equation"
+    },
+    "Symbolic Variable": {
+        "prefix": ["var", "symbol"],
+        "body": [
+            "var('${1:x y z}')",
+            "${0}"
+        ],
+        "description": "Define symbolic variables"
+    },
+    "Derivative": {
+        "prefix": ["diff", "derivative"],
+        "body": [
+            "${1:df} = diff(${2:f}, ${3:x})",
+            "${0}"
+        ],
+        "description": "Compute derivative"
+    },
+    "Integral": {
+        "prefix": ["int", "integrate"],
+        "body": [
+            "${1:result} = integrate(${2:f}, ${3:x})",
+            "${0}"
+        ],
+        "description": "Compute integral"
+    },
+    "Definite Integral": {
+        "prefix": ["defint", "definite"],
+        "body": [
+            "${1:result} = integrate(${2:f}, (${3:x}, ${4:a}, ${5:b}))",
+            "${0}"
+        ],
+        "description": "Compute definite integral"
+    },
+    "Limit": {
+        "prefix": ["lim", "limit"],
+        "body": [
+            "${1:result} = limit(${2:f}, ${3:x}=${4:0})",
+            "${0}"
+        ],
+        "description": "Compute limit"
+    },
+    "Taylor Series": {
+        "prefix": ["taylor", "series"],
+        "body": [
+            "${1:result} = taylor(${2:f}, ${3:x}, ${4:0}, ${5:5})",
+            "${0}"
+        ],
+        "description": "Taylor series expansion"
+    },
+    "Plot": {
+        "prefix": ["plot", "graph"],
+        "body": [
+            "var('${1:x}')",
+            "plot(${2:sin(x)}, (${1:x}, ${3:-pi}, ${4:pi}))",
+            "${0}"
+        ],
+        "description": "Plot a function"
+    },
+    "Parametric Plot": {
+        "prefix": ["paraplot", "parametric"],
+        "body": [
+            "var('${1:t}')",
+            "parametric_plot((${2:cos(t)}, ${3:sin(t)}), (${1:t}, ${4:0}, ${5:2*pi}))",
+            "${0}"
+        ],
+        "description": "Parametric plot"
+    },
+    "3D Plot": {
+        "prefix": ["plot3d", "surface"],
+        "body": [
+            "var('${1:x} ${2:y}')",
+            "plot3d(${3:x^2 + y^2}, (${1:x}, ${4:-2}, ${5:2}), (${2:y}, ${6:-2}, ${7:2}))",
+            "${0}"
+        ],
+        "description": "3D surface plot"
+    },
+    "Number Field": {
+        "prefix": ["numfield", "numberfield"],
+        "body": [
+            "var('${1:x}')",
+            "${2:K}.<${3:a}> = NumberField(${1:x}^${4:2} - ${5:2})",
+            "${0}"
+        ],
+        "description": "Create an algebraic number field"
+    },
+    "Quadratic Field": {
+        "prefix": ["quadfield", "quadratic"],
+        "body": [
+            "${1:K}.<${2:a}> = QuadraticField(${3:5})",
+            "${0}"
+        ],
+        "description": "Create a quadratic field Q(sqrt(d))"
+    },
+    "Ideal": {
+        "prefix": ["ideal"],
+        "body": [
+            "${1:I} = ${2:R}.ideal([${3:generators}])",
+            "${0}"
+        ],
+        "description": "Create an ideal"
+    },
+    "Groebner Basis": {
+        "prefix": ["groebner", "gb"],
+        "body": [
+            "R.<${1:x}, ${2:y}> = PolynomialRing(${3|QQ,GF(p)|}, order='lex')",
+            "${4:I} = R.ideal([${5:polynomials}])",
+            "${6:gb} = ${4:I}.groebner_basis()",
+            "${0}"
+        ],
+        "description": "Compute Groebner basis"
+    },
+    "Vector": {
+        "prefix": ["vec", "vector"],
+        "body": [
+            "${1:v} = vector(${2|ZZ,QQ,RR|}, [${3:1, 2, 3}])",
+            "${0}"
+        ],
+        "description": "Create a vector"
+    },
+    "Dot Product": {
+        "prefix": ["dot", "inner"],
+        "body": [
+            "${1:result} = ${2:v1}.dot_product(${3:v2})",
+            "${0}"
+        ],
+        "description": "Compute dot product of two vectors"
+    },
+    "Graph": {
+        "prefix": ["graph"],
+        "body": [
+            "${1:G} = Graph({",
+            "\t${2:0}: [${3:1, 2}],",
+            "\t${4:1}: [${5:2}]",
+            "})",
+            "${0}"
+        ],
+        "description": "Create an undirected graph"
+    },
+    "DiGraph": {
+        "prefix": ["digraph", "directed"],
+        "body": [
+            "${1:G} = DiGraph({",
+            "\t${2:0}: [${3:1, 2}],",
+            "\t${4:1}: [${5:2}]",
+            "})",
+            "${0}"
+        ],
+        "description": "Create a directed graph"
+    },
+    "RSA Key Generation": {
+        "prefix": ["rsa", "rsakeygen"],
+        "body": [
+            "# RSA Key Generation",
+            "p = random_prime(2^${1:512})",
+            "q = random_prime(2^${1:512})",
+            "n = p * q",
+            "phi = (p - 1) * (q - 1)",
+            "e = ${2:65537}",
+            "d = inverse_mod(e, phi)",
+            "print(f'n = {n}')",
+            "print(f'e = {e}')",
+            "print(f'd = {d}')",
+            "${0}"
+        ],
+        "description": "RSA key generation template"
+    },
+    "RSA Encrypt": {
+        "prefix": ["rsaenc", "rsaencrypt"],
+        "body": [
+            "${1:c} = power_mod(${2:m}, ${3:e}, ${4:n})",
+            "${0}"
+        ],
+        "description": "RSA encryption"
+    },
+    "RSA Decrypt": {
+        "prefix": ["rsadec", "rsadecrypt"],
+        "body": [
+            "${1:m} = power_mod(${2:c}, ${3:d}, ${4:n})",
+            "${0}"
+        ],
+        "description": "RSA decryption"
+    },
+    "Wiener Attack": {
+        "prefix": ["wiener"],
+        "body": [
+            "# Wiener's Attack on small d",
+            "def wiener_attack(e, n):",
+            "    cf = continued_fraction(e/n)",
+            "    convergents = cf.convergents()",
+            "    for c in convergents:",
+            "        k, d = c.numerator(), c.denominator()",
+            "        if k == 0:",
+            "            continue",
+            "        if (e*d - 1) % k != 0:",
+            "            continue",
+            "        phi = (e*d - 1) // k",
+            "        b = n - phi + 1",
+            "        disc = b^2 - 4*n",
+            "        if disc >= 0:",
+            "            t = isqrt(disc)",
+            "            if t^2 == disc and (b+t) % 2 == 0:",
+            "                return d",
+            "    return None",
+            "",
+            "d = wiener_attack(${1:e}, ${2:n})",
+            "${0}"
+        ],
+        "description": "Wiener's attack for small RSA private exponent"
+    },
+    "Hastad Broadcast": {
+        "prefix": ["hastad", "broadcast"],
+        "body": [
+            "# Hastad's Broadcast Attack",
+            "# Given e=3 and same message encrypted to 3 different n",
+            "c_list = [${1:c1}, ${2:c2}, ${3:c3}]",
+            "n_list = [${4:n1}, ${5:n2}, ${6:n3}]",
+            "m_cubed = crt(c_list, n_list)",
+            "m = Integer(m_cubed).nth_root(3)",
+            "${0}"
+        ],
+        "description": "Hastad's broadcast attack (e=3)"
+    },
+    "Bytes to Long": {
+        "prefix": ["b2l", "bytestolong"],
+        "body": [
+            "${1:n} = int.from_bytes(${2:data}, 'big')",
+            "${0}"
+        ],
+        "description": "Convert bytes to integer"
+    },
+    "Long to Bytes": {
+        "prefix": ["l2b", "longtobytes"],
+        "body": [
+            "${1:data} = int(${2:n}).to_bytes((int(${2:n}).bit_length() + 7) // 8, 'big')",
+            "${0}"
+        ],
+        "description": "Convert integer to bytes"
+    },
+    "Pohlig Hellman": {
+        "prefix": ["pohlig", "pohlighellman"],
+        "body": [
+            "# Pohlig-Hellman for smooth order",
+            "def pohlig_hellman(g, h, p):",
+            "    F = GF(p)",
+            "    g, h = F(g), F(h)",
+            "    n = p - 1",
+            "    factors = factor(n)",
+            "    residues = []",
+            "    moduli = []",
+            "    for (pi, ei) in factors:",
+            "        qi = pi^ei",
+            "        gi = g^(n // qi)",
+            "        hi = h^(n // qi)",
+            "        xi = discrete_log(hi, gi)",
+            "        residues.append(xi)",
+            "        moduli.append(qi)",
+            "    return crt(residues, moduli)",
+            "",
+            "${1:x} = pohlig_hellman(${2:g}, ${3:h}, ${4:p})",
+            "${0}"
+        ],
+        "description": "Pohlig-Hellman algorithm for DLP"
+    },
+    "Smith Normal Form": {
+        "prefix": ["smith", "snf"],
+        "body": [
+            "${1:D}, ${2:U}, ${3:V} = ${4:M}.smith_form()",
+            "# M = U * D * V",
+            "${0}"
+        ],
+        "description": "Compute Smith Normal Form"
+    },
+    "Hermite Normal Form": {
+        "prefix": ["hermite", "hnf"],
+        "body": [
+            "${1:H} = ${2:M}.hermite_form()",
+            "${0}"
+        ],
+        "description": "Compute Hermite Normal Form"
+    },
+    "Kernel": {
+        "prefix": ["kernel", "nullspace"],
+        "body": [
+            "${1:K} = ${2:M}.right_kernel()",
+            "${3:basis} = ${1:K}.basis()",
+            "${0}"
+        ],
+        "description": "Compute matrix kernel/nullspace"
+    },
+    "Eigenvalues": {
+        "prefix": ["eigen", "eigenvalues"],
+        "body": [
+            "${1:eigenvalues} = ${2:M}.eigenvalues()",
+            "${3:eigenvectors} = ${2:M}.eigenvectors_right()",
+            "${0}"
+        ],
+        "description": "Compute eigenvalues and eigenvectors"
+    },
+    "Jordan Form": {
+        "prefix": ["jordan"],
+        "body": [
+            "${1:J}, ${2:P} = ${3:M}.jordan_form(transformation=True)",
+            "# M = P * J * P^(-1)",
+            "${0}"
+        ],
+        "description": "Compute Jordan normal form"
+    },
+    "Characteristic Polynomial": {
+        "prefix": ["charpoly", "characteristic"],
+        "body": [
+            "${1:cp} = ${2:M}.charpoly()",
+            "${0}"
+        ],
+        "description": "Compute characteristic polynomial"
+    },
+    "Minimal Polynomial": {
+        "prefix": ["minpoly", "minimal"],
+        "body": [
+            "${1:mp} = ${2:M}.minpoly()",
+            "${0}"
+        ],
+        "description": "Compute minimal polynomial"
+    },
+    "For Loop": {
+        "prefix": ["for", "forloop"],
+        "body": [
+            "for ${1:i} in range(${2:n}):",
+            "\t${0}"
+        ],
+        "description": "For loop"
+    },
+    "List Comprehension": {
+        "prefix": ["listcomp", "lc"],
+        "body": [
+            "[${1:expr} for ${2:x} in ${3:iterable}]${0}"
+        ],
+        "description": "List comprehension"
+    },
+    "Function Definition": {
+        "prefix": ["def", "function"],
+        "body": [
+            "def ${1:function_name}(${2:args}):",
+            "\t\"\"\"${3:Description}\"\"\"",
+            "\t${0}",
+            "\treturn ${4:result}"
+        ],
+        "description": "Define a function"
+    },
+    "Class Definition": {
+        "prefix": ["class"],
+        "body": [
+            "class ${1:ClassName}:",
+            "\t\"\"\"${2:Class description}\"\"\"",
+            "\t",
+            "\tdef __init__(self, ${3:args}):",
+            "\t\t${0}"
+        ],
+        "description": "Define a class"
+    },
+    "Try Except": {
+        "prefix": ["try", "tryexcept"],
+        "body": [
+            "try:",
+            "\t${1:pass}",
+            "except ${2:Exception} as e:",
+            "\t${0:print(e)}"
+        ],
+        "description": "Try-except block"
+    },
+    "Print Format": {
+        "prefix": ["pf", "printf"],
+        "body": [
+            "print(f'${1:message}: {${2:variable}}')",
+            "${0}"
+        ],
+        "description": "Print with f-string formatting"
+    },
+    "LaTeX Output": {
+        "prefix": ["latex", "tex"],
+        "body": [
+            "print(latex(${1:expression}))",
+            "${0}"
+        ],
+        "description": "Print LaTeX representation"
+    },
+    "Show Expression": {
+        "prefix": ["show", "display"],
+        "body": [
+            "show(${1:expression})",
+            "${0}"
+        ],
+        "description": "Display expression nicely"
+    },
+    "Set Random Seed": {
+        "prefix": ["seed", "randomseed"],
+        "body": [
+            "set_random_seed(${1:42})",
+            "${0}"
+        ],
+        "description": "Set random seed for reproducibility"
+    },
+    "Timer": {
+        "prefix": ["timer", "timeit"],
+        "body": [
+            "import time",
+            "start = time.time()",
+            "${1:# code to time}",
+            "end = time.time()",
+            "print(f'Time: {end - start:.4f}s')",
+            "${0}"
+        ],
+        "description": "Simple timer for code execution"
+    },
+    "Assert": {
+        "prefix": ["assert"],
+        "body": [
+            "assert ${1:condition}, \"${2:Error message}\"",
+            "${0}"
+        ],
+        "description": "Assert statement"
+    },
+    "Main Guard": {
+        "prefix": ["main", "ifmain"],
+        "body": [
+            "if __name__ == '__main__':",
+            "\t${0}"
+        ],
+        "description": "Main execution guard"
+    }
+}
