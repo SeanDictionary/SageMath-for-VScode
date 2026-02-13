@@ -106,30 +106,22 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     // TODO: Function: Auto-clone&install Sage LSP server
-    //      Clone from https://github.com/SeanDictionary/sage-lsp-server and using `sage -pip install ./sage-lsp-server` to install
+    //      Clone from https://github.com/SeanDictionary/sage-lsp and using `pip install ./sage-lsp` to install
 
     // Function: Requirements check
     async function checkRequirements(): Promise<string[]> {
         const TARGET: string[] = [
-            "sage-lsp-server"
+            "sage-lsp"
         ]
 
         const missing: string[] = [];
         let checked = 0;
 
-        const SageMathPath = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<string>('path');
         const condaEnvPath = await getCondaEnvPath();
-        const command = path.resolve(condaEnvPath!, SageMathPath!);
 
         return new Promise((resolve, reject) => {
-            if (!SageMathPath) {
-                vscode.window.showErrorMessage('SageMath path is not configured. \nPlease set sagemath-for-vscode.sage.path in settings.');
-                resolve(TARGET);
-                return;
-            }
-
             TARGET.forEach((pkg) => {
-                const cmd = `${command} -pip show ${pkg}`;
+                const cmd = `${condaEnvPath}/bin/pip show ${pkg}`;
                 try {
                     exec(cmd, (error, stdout, stderr) => {
                         checked++;
@@ -160,11 +152,11 @@ export function activate(context: vscode.ExtensionContext) {
         const serverOptions: ServerOptions = {
             run: {
                 command: command,
-                args: ['-python', '-m', 'pylsp'],
+                args: ['sagelsp'],
             },
             debug: {
                 command: command,
-                args: ['-python', '-m', 'pylsp', '-v'],
+                args: ['sagelsp', "--log", "DEBUG"],
             },
         };
         const clientOptions: LanguageClientOptions = {
@@ -193,7 +185,7 @@ export function activate(context: vscode.ExtensionContext) {
             if (missing.length === 0) {
                 await startLSP();
             } else {
-                vscode.window.showErrorMessage(`Missing packages for LSP: ${missing.join(', ')}\n\nPlease install from https://github.com/SeanDictionary/sage-lsp-server`);
+                vscode.window.showErrorMessage(`Missing packages for LSP: ${missing.join(', ')}\n`);
             }
         })();
     }
