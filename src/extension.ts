@@ -68,8 +68,9 @@ export function activate(context: vscode.ExtensionContext) {
             if (selectedEnv) {
                 const selectedPath = envs.find(env => env.name === selectedEnv.label)?.path;
                 if (selectedPath) {
-                    vscode.workspace.getConfiguration('sagemath-for-vscode.sage').update('condaEnvPath', selectedPath, true);
+                    await vscode.workspace.getConfiguration('sagemath-for-vscode.sage').update('condaEnvPath', selectedPath, true);
                     vscode.window.showInformationMessage(`Selected Conda environment: \n\n${selectedEnv.label} with path ${selectedPath}`);
+                    updateCondaEnvButton();
                 }
             }
         } catch (error) {
@@ -146,17 +147,20 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Function: start LSP
     async function startLSP() {
-        const SageMathPath = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<string>('path');
+        const lspPath = './bin/sagelsp';
         const condaEnvPath = await getCondaEnvPath();
-        const command = path.resolve(condaEnvPath!, SageMathPath!);
+        const command = path.resolve(condaEnvPath!, './bin/python');
+        const PATH = `${condaEnvPath}/bin:${process.env.PATH}`;
         const serverOptions: ServerOptions = {
             run: {
                 command: command,
-                args: ['sagelsp'],
+                args: ["-m", "sagelsp"],
+                options: { env: { ...process.env, PATH } },
             },
             debug: {
                 command: command,
-                args: ['sagelsp', "--log", "DEBUG"],
+                args: ["-m", "sagelsp", "--log", "DEBUG"],
+                options: { env: { ...process.env, PATH } },
             },
         };
         const clientOptions: LanguageClientOptions = {
@@ -227,11 +231,33 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Select Conda Environment button
     const condaEnvButton = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    condaEnvButton.text = '$(terminal) Select Conda Env';
     condaEnvButton.command = 'sagemath-for-vscode.selectCondaEnv';
     condaEnvButton.tooltip = 'SageMath for VScode: Select Conda Environment';
 
-    // Monitor
+    // Function: Update Conda Env Button Text
+    function updateCondaEnvButton() {
+        const condaEnvPath = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<string>('condaEnvPath');
+        if (condaEnvPath) {
+            const envName = basename(condaEnvPath);
+            condaEnvButton.text = `$(terminal) ${envName}`;
+            condaEnvButton.tooltip = `SageMath for VScode: Current Environment - ${envName}\nPath: ${condaEnvPath}`;
+        } else {
+            condaEnvButton.text = '$(terminal) Select Conda Env';
+            condaEnvButton.tooltip = 'SageMath for VScode: Select Conda Environment';
+        }
+    }
+
+    // Initialize button text
+    updateCondaEnvButton();
+
+    // Monitor configuration changes
+    context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => {
+        if (e.affectsConfiguration('sagemath-for-vscode.sage.condaEnvPath')) {
+            updateCondaEnvButton();
+        }
+    }));
+
+    // Monitor active editor changes
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(editor => {
         if (editor && editor.document.languageId === 'sagemath') {
             condaEnvButton.show();
