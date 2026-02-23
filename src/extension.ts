@@ -30,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
 
             const filePath = editor.document.uri.fsPath;
             const dirpath = dirname(filePath);
-            const command = `cd '${dirpath}' && sage '${filePath}'`;
+            const command = `cd '${dirpath}' && sage '${filePath}'; rm -f '${filePath}.py'`;
             const terminalName = !condaEnvPath ? 'SageMath' : `SageMath (${condaEnvName})`;
 
             let terminal = vscode.window.terminals.find(t => t.name === terminalName);
@@ -151,10 +151,11 @@ export function activate(context: vscode.ExtensionContext) {
         const condaEnvPath = await getCondaEnvPath();
         const command = path.resolve(condaEnvPath!, './bin/python');
         const PATH = `${condaEnvPath}/bin:${process.env.PATH}`;
+        const LogLevel = vscode.workspace.getConfiguration('sagemath-for-vscode.LSP').get<string>('LSPLogLevel', 'INFO');
         const serverOptions: ServerOptions = {
             run: {
                 command: command,
-                args: ["-m", "sagelsp"],
+                args: ["-m", "sagelsp", "--log", LogLevel],
                 options: { env: { ...process.env, PATH } },
             },
             debug: {

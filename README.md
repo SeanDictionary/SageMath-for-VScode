@@ -14,12 +14,13 @@ I wish to make it a full-featured SageMath extension, especially for SageMath's 
 
 ## Features
 
--   Syntax highlighting for SageMath code
--   Basic Semantic highlighting for SageMath code (there are still some bugs, you can see [known bugs file](./docs/SemanticHighlighting-en.md) for details)
+-   Basic highlighting for SageMath code
 -   Support F5, command and buttom to run SageMath file
 -   Support hotkey for line comment and block comment
 -   Support conda environment switching
--   Semantic highlighting rely on `perdefinition.py` for SageMath Std Library, you can modify this file to add more semantic highlighting support
+-   Remove the generated `.py` file after running SageMath code
+
+Other features are supported by python package [sage-lsp](https://pypi.org/project/sage-lsp/)
 
 ## Changelog
 

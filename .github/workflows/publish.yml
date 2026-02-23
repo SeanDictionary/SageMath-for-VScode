@@ -25,18 +25,26 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Build Code
+        run: npm run compile
+
       - name: Install vsce
         run: npm install -g @vscode/vsce
 
-      # 优化点：先打包出 vsix 文件，这样既能发布到商店，也能上传到 GitHub Release
       - name: Build VSIX
-        run: vsce package -o ./extension.vsix
+        run: |
+          if [[ ${{ github.ref_name }} == *-* ]]; then
+            echo "检测到先行版本标签，正在打包预发布版..."
+            vsce package --pre-release -o ./extension.vsix
+          else
+            echo "检测到正式版本标签，正在打包正式版..."
+            vsce package -o ./extension.vsix
+          fi
 
       - name: Publish to Marketplace
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
         run: |
-          # 使用已经打包好的 vsix 文件进行发布，效率更高且保证内容一致
           if [[ ${{ github.ref_name }} == *-* ]]; then
             echo "检测到先行版本标签，正在发布预发布版..."
             vsce publish --pre-release -p $VSCE_PAT --packagePath ./extension.vsix
@@ -45,31 +53,43 @@ jobs:
             vsce publish -p $VSCE_PAT --packagePath ./extension.vsix
           fi
 
+      - name: Build Release Notes from Changelog
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          awk -v ver="$VERSION" '
+            $0 ~ "^## \\["ver"\\]" {flag=1; print; next}
+            flag && $0 ~ "^## \\[" {exit}
+            flag {print}
+          ' CHANGELOG.md > release_notes.md
+
+          if [[ ! -s release_notes.md ]]; then
+            echo "No changelog entry found for $VERSION" > release_notes.md
+          fi
+
       - name: Extract Release Notes
         id: extract_release_notes
-        uses: anton-prakapovich/extract-release-notes-action@v1
-        with:
-          filename: CHANGELOG.md
-          # 如果你的标签是 v1.0.0 但 CHANGELOG 里是 [1.0.0]，去掉开头的 v
-          version: ${{ github.ref_name }}
+        run: |
+          echo "contents<<EOF" >> "$GITHUB_OUTPUT"
+          cat release_notes.md >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
 
-      - name: Get Previous Tag
+      - name: Find Previous Tag
         id: pre_tag
         run: |
-          # 增加容错，如果没有上一个 tag 则不输出
-          prev_tag=$(git describe --abbrev=0 --tags ${{ github.ref_name }}^ 2>/dev/null || echo "")
-          echo "prev=$prev_tag" >> $GITHUB_OUTPUT
+          PREV=$(git tag --sort=-v:refname | grep -v "^${GITHUB_REF_NAME}$" | head -n 1 || true)
+          echo "prev=$PREV" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          # 如果是预发布版，GitHub Release 也会标记为 Pre-release
-          prerelease: ${{ contains(github.ref_name, '-') }}
+          # 使用 CHANGELOG 中对应版本内容
           body: |
             ${{ steps.extract_release_notes.outputs.contents }}
             
             ---
             ${{ steps.pre_tag.outputs.prev != '' && format('**Full Changelog**: https://github.com/{0}/compare/{1}...{2}', github.repository, steps.pre_tag.outputs.prev, github.ref_name) || 'Initial Release' }}
+          # 如果 Tag 包含 '-'，GitHub 界面会标记为 Pre-release
+          prerelease: ${{ contains(github.ref_name, '-') }}
           files: |
             ./extension.vsix
         env:

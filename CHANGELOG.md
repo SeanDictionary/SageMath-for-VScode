@@ -4,6 +4,23 @@ All notable changes to the "sagemath" extension will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.2-beta] - 2026-02-24
+
+This version is a beta release for using python package [sage-lsp](https://pypi.org/project/sage-lsp/) to start LSP server. Same as [2.0.1]
+
+### Added
+
+-  Add text for Env selection button
+-  Add Github Actions for publishing and generate release
+
+### Changed
+
+-  Using python package [sage-lsp](https://pypi.org/project/sage-lsp/) to start LSP server, which is more stable and faster than the old method.
+
+### Fixed
+
+-  Support SageMath 10.8 and later
+
 ## [2.0.0] - 2025-11-13
 
 ### Added

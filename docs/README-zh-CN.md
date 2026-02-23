@@ -8,18 +8,19 @@
 
 ## 简介
 
-这是一个为 [SageMath](https://www.sagemath.org/) 在 VScode 上 提供语法高亮、代码运行等功能的扩展插件。
+这是一个为 [SageMath](https://www.sagemath.org/) 在 VScode 上提供语法高亮、代码运行等功能的扩展插件。
 
 我本来是想是打造一个功能完整的 SageMath 扩展，特别是对 LSP（语言服务器协议）的支持。但是显然，我太废物了，搞定这个还是太困难了，我会慢慢完善的，所以有好的建议欢迎提出，也欢迎参与贡献。
 
 ## 功能特性
 
--   SageMath 代码语法高亮
--   支持部分基础的 SageMath 代码语义高亮（但是有一些已知问题，查看[问题清单](./SemanticHighlighting-zh-CN.md)了解如何规避这些问题）
--   支持 F5、命令面板和按钮运行 SageMath 文件
--   支持快捷键进行行注释和块注释
--   支持 conda 环境切换
--   语义高亮依赖根据 SageMath 标准库写的 `perdefinition.py`，你可以自己修改这个文件来添加更多的语义高亮支持
+- 支持基础的 SageMath 代码高亮
+- 支持 F5、命令面板和按钮运行 SageMath 文件
+- 支持快捷键进行行注释和块注释
+- 支持 conda 环境切换
+- 运行 SageMath 代码后自动删除生成的 `.py` 文件
+
+其他功能由 Python 包 [sage-lsp](https://pypi.org/project/sage-lsp/) 提供。
 
 ## 更新日志
 
