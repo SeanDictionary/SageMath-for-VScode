@@ -35,10 +35,10 @@ jobs:
         run: |
           if [[ ${{ github.ref_name }} == *-* ]]; then
             echo "检测到先行版本标签，正在打包预发布版..."
-            vsce package --pre-release -o ./extension.vsix
+            vsce package --pre-release -o ./SageMath-for-VSCode-${{ github.ref_name }}.vsix
           else
             echo "检测到正式版本标签，正在打包正式版..."
-            vsce package -o ./extension.vsix
+            vsce package -o ./SageMath-for-VSCode-${{ github.ref_name }}.vsix
           fi
 
       - name: Publish to Marketplace
@@ -47,10 +47,10 @@ jobs:
         run: |
           if [[ ${{ github.ref_name }} == *-* ]]; then
             echo "检测到先行版本标签，正在发布预发布版..."
-            vsce publish --pre-release -p $VSCE_PAT --packagePath ./extension.vsix
+            vsce publish --pre-release -p $VSCE_PAT --packagePath ./SageMath-for-VSCode-${{ github.ref_name }}.vsix
           else
             echo "检测到正式版本标签，正在发布正式版..."
-            vsce publish -p $VSCE_PAT --packagePath ./extension.vsix
+            vsce publish -p $VSCE_PAT --packagePath ./SageMath-for-VSCode-${{ github.ref_name }}.vsix
           fi
 
       - name: Build Release Notes from Changelog
@@ -91,6 +91,6 @@ jobs:
           # 如果 Tag 包含 '-'，GitHub 界面会标记为 Pre-release
           prerelease: ${{ contains(github.ref_name, '-') }}
           files: |
-            ./extension.vsix
+            ./SageMath-for-VSCode-${{ github.ref_name }}.vsix
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
