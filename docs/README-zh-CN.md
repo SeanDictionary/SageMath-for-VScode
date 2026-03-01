@@ -6,6 +6,10 @@
 
 ---
 
+> [!Tip]
+> 预发布版本 V2.0.2 已经在插件市场发布了
+> 详情见 [这里](https://github.com/SeanDictionary/SageMath-for-VScode/tree/v2.0.2-beta) 了解更多功能
+
 ## 简介
 
 这是一个为 [SageMath](https://www.sagemath.org/) 在 VScode 上 提供语法高亮、代码运行等功能的扩展插件。
