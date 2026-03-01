@@ -6,6 +6,10 @@
 
 ---
 
+> [!Tip]
+> Pre-released Version V2.0.2 has been published in Extension Market
+> See [here](https://github.com/SeanDictionary/SageMath-for-VScode/tree/v2.0.2-beta) for more features
+
 ## What is this?
 
 It's a extension for [SageMath](https://www.sagemath.org/) that provides syntax highlighting, code execution, and other features for Visual Studio Code.
