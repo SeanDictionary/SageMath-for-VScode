@@ -4,6 +4,16 @@ All notable changes to the "sagemath" extension will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] - 2026-xx-xx
+
+### Fixed
+
+-  Fix `Get Conda Eenvs Error: /bin/sh: 1: conda: not found`
+
+### Added
+
+-  Add conda path configuration in settings, default `conda` for global. If meet wrong like `conda: not found`, please set the path to conda executable in settings.
+
 ## [2.0.2-beta] - 2026-02-24
 
 This version is a beta release for using python package [sage-lsp](https://pypi.org/project/sage-lsp/) to start LSP server. Same as [2.0.1]

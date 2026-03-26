@@ -198,7 +198,11 @@ export function activate(context: vscode.ExtensionContext) {
     // Function: Get Conda Environments
     function getCondaEnvs(): Promise<{ name: string; path: string }[]> {
         return new Promise((resolve, reject) => {
-            exec('conda env list --json', (error, stdout, stderr) => {
+            const condaPath = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<string>('condaPath', 'conda');
+            const cmd = `
+            ${condaPath} env list --json
+            `;
+            exec(cmd, { shell: "/bin/bash" }, (error, stdout, stderr) => {
                 if (error) {
                     reject(`Get Conda Eenvs Error: ${stderr}`);
                     return;

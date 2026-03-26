@@ -87,6 +87,12 @@
                     "default": "./bin/sage",
                     "markdownDescription": "Path to the SageMath in conda environment.\n\nDefault is `./bin/sage`"
                 },
+                "sagemath-for-vscode.sage.condaPath": {
+                    "title": "Conda Executable Path",
+                    "type": "string",
+                    "default": "conda",
+                    "markdownDescription": "Path to the Conda executable.\n\nDefault is `conda`, which assumes Conda is in your system's PATH. If you encounter errors like `conda: not found`, please set this to the full path of your Conda executable."
+                },
                 "sagemath-for-vscode.sage.condaEnvPath": {
                     "title": "SageMath Conda Environment",
                     "type": "string",
