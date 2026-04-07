@@ -93,11 +93,17 @@
                     "default": "conda",
                     "markdownDescription": "Path to the Conda executable.\n\nDefault is `conda`, which assumes Conda is in your system's PATH. If you encounter errors like `conda: not found`, please set this to the full path of your Conda executable."
                 },
+                "sagemath-for-vscode.sage.useGlobalEnv": {
+                    "title": "Using Global Environment for SageMath",
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "Whether to use the global environment for SageMath.\n\nIf true, the extension will use the global SageMath installation instead of a conda environment."
+                },
                 "sagemath-for-vscode.sage.condaEnvPath": {
-                    "title": "SageMath Conda Environment",
+                    "title": "SageMath Conda Environment Path",
                     "type": "string",
                     "default": "",
-                    "markdownDescription": "Name of the Conda environment to use for SageMath.\n\nIf not set, will use global environment."
+                    "markdownDescription": "Path to the selected Conda environment for SageMath.\n\nIt only works while `Using Global Environment for SageMath` is false."
                 },
                 "sagemath-for-vscode.LSP.useSageMathLSP": {
                     "title": "Use SageMath Language Server Protocol",
