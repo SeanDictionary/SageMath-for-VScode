@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
         const document = editor.document;
         document.save().then(async () => {
             const condaEnvPath = await getCondaEnvPath();
-            const condaEnvName = condaEnvPath ? basename(condaEnvPath) : undefined;
+            const condaEnvName = condaEnvPath ? basename(condaEnvPath) : 'Global';
 
             const filePath = editor.document.uri.fsPath;
             const dirpath = dirname(filePath);
@@ -104,14 +104,13 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Function: Check&Get Conda Env Path
     async function getCondaEnvPath() {
-        let useGlobalEnv = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<boolean>('useGlobalEnv', false);
+        const useGlobalEnv = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<boolean>('useGlobalEnv', false);
         if (useGlobalEnv) {
             return '';
         }
         let condaEnvPath = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<string>('condaEnvPath');
         if (!condaEnvPath) {
             await vscode.commands.executeCommand('sagemath-for-vscode.selectCondaEnv');
-            await new Promise((r) => setTimeout(r, 1000));
             condaEnvPath = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<string>('condaEnvPath');
         }
         return condaEnvPath;
@@ -133,7 +132,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         return new Promise((resolve, reject) => {
             TARGET.forEach((pkg) => {
-                const cmd = `${condaEnvPath}/bin/pip show ${pkg}`;
+                const cmd = condaEnvPath ? `${condaEnvPath}/bin/pip show ${pkg}` : `pip show ${pkg}`;
                 try {
                     exec(cmd, (error, stdout, stderr) => {
                         checked++;
@@ -158,10 +157,9 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Function: start LSP
     async function startLSP() {
-        const lspPath = './bin/sagelsp';
         const condaEnvPath = await getCondaEnvPath();
-        const command = path.resolve(condaEnvPath!, './bin/python');
-        const PATH = `${condaEnvPath}/bin:${process.env.PATH}`;
+        const command = condaEnvPath ? `${condaEnvPath}/bin/python` : 'python';
+        const PATH = condaEnvPath ?`${condaEnvPath}/bin:${process.env.PATH}` : process.env.PATH;
         const LogLevel = vscode.workspace.getConfiguration('sagemath-for-vscode.LSP').get<string>('LSPLogLevel', 'INFO');
         const serverOptions: ServerOptions = {
             run: {
