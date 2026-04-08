@@ -26,18 +26,22 @@ export function activate(context: vscode.ExtensionContext) {
         const document = editor.document;
         document.save().then(async () => {
             const condaEnvPath = await getCondaEnvPath();
-            const condaEnvName = condaEnvPath ? basename(condaEnvPath) : 'Global';
-
+            const envs = await getCondaEnvs();
+            const condaEnvName = condaEnvPath ? (envs.find(env => env.path === condaEnvPath)?.name || 'Unknown Env') : 'Global';
+            const PATH = condaEnvPath ? `${condaEnvPath}/bin:${process.env.PATH}` : process.env.PATH;
+            const sagePath = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<string>('sagePath', 'sage');
             const filePath = editor.document.uri.fsPath;
-            const dirpath = dirname(filePath);
-            const command = `cd '${dirpath}' && sage '${filePath}'; rm -f '${filePath}.py'`;
-            const terminalName = !condaEnvPath ? 'SageMath' : `SageMath (${condaEnvName})`;
+            const dirPath = dirname(filePath);
+            const command = `${sagePath} '${filePath}'; rm -f '${filePath}.py'`;
+            const terminalName = `SageMath (${condaEnvName})`;
 
             let terminal = vscode.window.terminals.find(t => t.name === terminalName);
 
             if (!terminal) {
                 terminal = vscode.window.createTerminal({
                     name: terminalName,
+                    cwd: dirPath,
+                    env: { ...process.env, PATH },
                 });
                 if (condaEnvPath) {
                     terminal.sendText(`conda activate ${condaEnvPath}`);
@@ -55,10 +59,12 @@ export function activate(context: vscode.ExtensionContext) {
     let selectCondaEnv = vscode.commands.registerCommand('sagemath-for-vscode.selectCondaEnv', async () => {
         try {
             const envs = await getCondaEnvs();
+            const useGlobalEnv = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<boolean>('useGlobalEnv', false);
+            const condaEnvPath = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<string>('condaEnvPath');
             const pickItems: (vscode.QuickPickItem & { envPath?: string; useGlobalEnv?: boolean })[] = [
-                ...envs.map(env => ({ label: env.name, description: env.path, envPath: env.path })),
+                ...envs.map(env => ({ label: (!useGlobalEnv && condaEnvPath === env.path) ? `${env.name} (current)` : env.name, description: env.path, envPath: env.path })),
                 { label: 'Options', kind: vscode.QuickPickItemKind.Separator },
-                { label: 'Using Global Env', description: 'Use the global SageMath environment', useGlobalEnv: true }
+                { label: useGlobalEnv ? 'Global Env (current)' : 'Global Env', description: 'Use the global SageMath environment', useGlobalEnv: true }
             ];
 
             const selectedEnv = await vscode.window.showQuickPick(
@@ -211,9 +217,9 @@ export function activate(context: vscode.ExtensionContext) {
             const cmd = `
             ${condaPath} env list --json
             `;
-            exec(cmd, { shell: "/bin/bash" }, (error, stdout, stderr) => {
+            exec(cmd, (error, stdout, stderr) => {
                 if (error) {
-                    reject(`Get Conda Eenvs Error: ${stderr}`);
+                    reject(`Get Conda Envs Error: ${stderr}`);
                     return;
                 }
 
@@ -223,8 +229,8 @@ export function activate(context: vscode.ExtensionContext) {
                     const data = JSON.parse(stdout);
                     if (data.envs) {
                         data.envs.forEach((envPath: string) => {
-                            const envName = basename(envPath);
-                            envs.push({ name: envName, path: envPath });
+                            const env = data.envs_details[envPath];
+                            envs.push({ name: env.name, path: envPath });
                         });
                     }
                 } catch (parseError) {
@@ -249,7 +255,7 @@ export function activate(context: vscode.ExtensionContext) {
     condaEnvButton.tooltip = 'SageMath for VScode: Select Conda Environment';
 
     // Function: Update Conda Env Button Text
-    function updateCondaEnvButton() {
+    async function updateCondaEnvButton() {
         const useGlobalEnv = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<boolean>('useGlobalEnv', false);
         if (useGlobalEnv) {
             condaEnvButton.text = '$(terminal) Global';
@@ -258,9 +264,10 @@ export function activate(context: vscode.ExtensionContext) {
         }
         const condaEnvPath = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<string>('condaEnvPath');
         if (condaEnvPath) {
-            const envName = basename(condaEnvPath);
-            condaEnvButton.text = `$(terminal) ${envName}`;
-            condaEnvButton.tooltip = `SageMath for VScode: Current Environment - ${envName}\nPath: ${condaEnvPath}`;
+            const envs = await getCondaEnvs();
+            const condaEnvName = condaEnvPath ? (envs.find(env => env.path === condaEnvPath)?.name || 'Unknown Env') : 'Global';
+            condaEnvButton.text = `$(terminal) ${condaEnvName}`;
+            condaEnvButton.tooltip = `SageMath for VScode: Current Environment\n${condaEnvPath}`;
         } else {
             condaEnvButton.text = '$(terminal) Select Conda Env';
             condaEnvButton.tooltip = 'SageMath for VScode: Select Conda Environment';
@@ -271,14 +278,14 @@ export function activate(context: vscode.ExtensionContext) {
     updateCondaEnvButton();
 
     // Monitor configuration changes
-    context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => {
+    context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(async (e) => {
         if (e.affectsConfiguration('sagemath-for-vscode.sage.condaEnvPath') || e.affectsConfiguration('sagemath-for-vscode.sage.useGlobalEnv')) {
-            updateCondaEnvButton();
+            await updateCondaEnvButton();
         }
     }));
 
     // Monitor active editor changes
-    context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(editor => {
+    context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(async (editor) => {
         if (editor && editor.document.languageId === 'sagemath') {
             condaEnvButton.show();
         } else {

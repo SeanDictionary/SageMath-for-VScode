@@ -8,12 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
--  Fix `Get Conda Eenvs Error: /bin/sh: 1: conda: not found`
--  Fix conda env select
+- Fix `Get Conda Eenvs Error: /bin/sh: 1: conda: not found`
+- Fix conda env select
+- Fix run command
 
 ### Added
 
--  Add conda path configuration in settings, default `conda` for global. If meet wrong like `conda: not found`, please set the path to conda executable in settings.
+- Add conda path configuration in settings, default `conda` for global. If meet wrong like `conda: not found`, please set the path to conda executable in settings.
 
 ## [2.0.2-beta] - 2026-02-24
 
@@ -21,30 +22,30 @@ This version is a beta release for using python package [sage-lsp](https://pypi.
 
 ### Added
 
--  Add text for Env selection button
--  Add Github Actions for publishing and generate release
+- Add text for Env selection button
+- Add Github Actions for publishing and generate release
 
 ### Changed
 
--  Using python package [sage-lsp](https://pypi.org/project/sage-lsp/) to start LSP server, which is more stable and faster than the old method.
+- Using python package [sage-lsp](https://pypi.org/project/sage-lsp/) to start LSP server, which is more stable and faster than the old method.
 
 ### Fixed
 
--  Support SageMath 10.8 and later
+- Support SageMath 10.8 and later
 
 ## [2.0.0] - 2025-11-13
 
 ### Added
 
--   File focus option when running SageMath in terminal
+- File focus option when running SageMath in terminal
 
 ### Fixed
 
--   Fix conda env path empty and selection bugs
+- Fix conda env path empty and selection bugs
 
 ### Changed
 
--   Using sage global env instead of venv to be suitable for LSP
+- Using sage global env instead of venv to be suitable for LSP
 
 ---
 
@@ -52,15 +53,15 @@ This version is a beta release for using python package [sage-lsp](https://pypi.
 
 ### Fixed
 
--   Fix [#1](https://github.com/SeanDictionary/SageMath-for-VScode/issues/1)
+- Fix [#1](https://github.com/SeanDictionary/SageMath-for-VScode/issues/1)
 
 ### Changed
 
--   Using sage -python to start LSP server [#2](https://github.com/SeanDictionary/SageMath-for-VScode/issues/2)
+- Using sage -python to start LSP server [#2](https://github.com/SeanDictionary/SageMath-for-VScode/issues/2)
 
 ### Added
 
--   Add .vscode for development
+- Add .vscode for development
 
 ---
 
@@ -68,12 +69,12 @@ This version is a beta release for using python package [sage-lsp](https://pypi.
 
 ### Fixed
 
--   Fix highlight bug in `for` sentences.
+- Fix highlight bug in `for` sentences.
 
 ### Changed
 
--   Update `predefinition.py`.
--   Add `cd` command before running SageMath.
+- Update `predefinition.py`.
+- Add `cd` command before running SageMath.
 
 ---
 
@@ -81,29 +82,29 @@ This version is a beta release for using python package [sage-lsp](https://pypi.
 
 ### Added
 
--   Auto-create Python venv for LSP. It fix errors coused by PEP 668 on new Linux distributions like Arch, Ubuntu 24.04, etc.
+- Auto-create Python venv for LSP. It fix errors coused by PEP 668 on new Linux distributions like Arch, Ubuntu 24.04, etc.
 
 ### Changed
 
--   Using the default terminal in vscode to run sagemath. It supports zsh, bash, cmd, pwsh, etc.
+- Using the default terminal in vscode to run sagemath. It supports zsh, bash, cmd, pwsh, etc.
 
 ### Removed
 
--   Remove the unuseful dependences
+- Remove the unuseful dependences
 
 ---
 
 ## [1.0.0] - 2025-07-04
 
--   Release 1.0.0
+- Release 1.0.0
 
 ### Test
 
--   Test the extension on WSL2
+- Test the extension on WSL2
 
 ### Changed
 
--   Update readme
+- Update readme
 
 ---
 
@@ -111,16 +112,16 @@ This version is a beta release for using python package [sage-lsp](https://pypi.
 
 ### Added
 
--   Add icon
--   Support more functions and classes in `predefinition.py`
+- Add icon
+- Support more functions and classes in `predefinition.py`
 
 ### Changed
 
--   Wrap start lsp function
+- Wrap start lsp function
 
 ### Fixed
 
--   Auto-installing python dependencies instead of venv
+- Auto-installing python dependencies instead of venv
 
 ---
 
@@ -128,12 +129,12 @@ This version is a beta release for using python package [sage-lsp](https://pypi.
 
 ### Added
 
--   Select Conda environment for SageMath
--   Using venv for lsp
+- Select Conda environment for SageMath
+- Using venv for lsp
 
 ### Fixed
 
--   Change package.json devDependencies to dependencies to package and publish the extension
+- Change package.json devDependencies to dependencies to package and publish the extension
 
 ---
 
@@ -141,11 +142,11 @@ This version is a beta release for using python package [sage-lsp](https://pypi.
 
 ### Added
 
--   Command: restart LSP
--   Add tiny logging package in utils
--   Add settings to configure LSP log level
--   Add support for real-time LSP log level switching
--   Add basic semantic highlighting for SageMath
+- Command: restart LSP
+- Add tiny logging package in utils
+- Add settings to configure LSP log level
+- Add support for real-time LSP log level switching
+- Add basic semantic highlighting for SageMath
 
 ---
 
@@ -153,10 +154,10 @@ This version is a beta release for using python package [sage-lsp](https://pypi.
 
 ### Added
 
--   Initial release
--   Support basic partly syntax highlighting for SageMath
--   Add hotkey for line comment and block comment
--   Add command to run SageMath
--   Bind F5 to run SageMath
--   Add button to run SageMath in the status bar
--   Add settings to configure SageMath path
+- Initial release
+- Support basic partly syntax highlighting for SageMath
+- Add hotkey for line comment and block comment
+- Add command to run SageMath
+- Bind F5 to run SageMath
+- Add button to run SageMath in the status bar
+- Add settings to configure SageMath path
