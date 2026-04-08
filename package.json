@@ -151,9 +151,7 @@
     },
     "scripts": {
         "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "pretest": "npm run compile",
-        "test": "node ./out/test/runTest.js"
+        "watch": "tsc -watch -p ./"
     },
     "devDependencies": {
         "@types/node": "^24.0.1",
