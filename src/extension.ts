@@ -10,6 +10,7 @@ import {
 } from 'vscode-languageclient/node';
 
 let client: LanguageClient;
+const lspOutputChannel = vscode.window.createOutputChannel('SageMath Language Server');
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('SageMath for VSCode is now active!');
@@ -92,15 +93,36 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
+    async function ensureLSPStarted(): Promise<boolean> {
+        const missing = await checkRequirements();
+        if (missing.length !== 0) {
+            vscode.window.showErrorMessage(`Missing packages for LSP: ${missing.join(', ')}\n`);
+            return false;
+        }
+
+        await startLSP();
+        return true;
+    }
+
     // Command: LSP restart
-    // TODO: bug fix
     let restartLSP = vscode.commands.registerCommand('sagemath-for-vscode.restartLSP', async () => {
-        if (client && client.state === ClientState.Running) {
-            await client.stop();
-            await client.start();
-            vscode.window.showInformationMessage('SageMath Language Server restarted.');
-        } else {
-            vscode.window.showWarningMessage('SageMath Language Server not running.');
+        const useLSP = vscode.workspace.getConfiguration('sagemath-for-vscode.LSP').get<boolean>('useSageMathLSP', true);
+        if (!useLSP) {
+            vscode.window.showWarningMessage('SageMath Language Server is disabled.');
+            return;
+        }
+
+        try {
+            if (client && client.state !== ClientState.Stopped) {
+                await client.stop();
+            }
+
+            const started = await ensureLSPStarted();
+            if (started) {
+                vscode.window.showInformationMessage('SageMath Language Server restarted.');
+            }
+        } catch (error) {
+            vscode.window.showErrorMessage(`Failed to restart SageMath Language Server: ${error}`);
         }
     });
 
@@ -122,8 +144,8 @@ export function activate(context: vscode.ExtensionContext) {
         return condaEnvPath;
     }
 
-    // TODO: Function: Auto-clone&install Sage LSP server
-    //      Clone from https://github.com/SeanDictionary/sage-lsp and using `pip install ./sage-lsp` to install
+    // TODO: Function: Auto-clone or install Sage LSP server
+    //      Clone from https://github.com/SeanDictionary/sage-lsp or using `pip install ./sage-lsp` to install
 
     // Function: Requirements check
     async function checkRequirements(): Promise<string[]> {
@@ -180,7 +202,8 @@ export function activate(context: vscode.ExtensionContext) {
             },
         };
         const clientOptions: LanguageClientOptions = {
-            documentSelector: [{ scheme: 'file', language: 'sagemath' }]
+            documentSelector: [{ scheme: 'file', language: 'sagemath' }],
+            outputChannel: lspOutputChannel,
         };
         client = new LanguageClient(
             'sagemath-lsp',
@@ -201,12 +224,7 @@ export function activate(context: vscode.ExtensionContext) {
     else {
         // Start LSP
         (async () => {
-            const missing = await checkRequirements();
-            if (missing.length === 0) {
-                await startLSP();
-            } else {
-                vscode.window.showErrorMessage(`Missing packages for LSP: ${missing.join(', ')}\n`);
-            }
+            await ensureLSPStarted();
         })();
     }
 

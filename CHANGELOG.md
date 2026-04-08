@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Fix `Get Conda Eenvs Error: /bin/sh: 1: conda: not found`
 - Fix conda env select
 - Fix run command
+- Fix LSP restart
 
 ### Added
 
