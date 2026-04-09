@@ -31,8 +31,9 @@ export function activate(context: vscode.ExtensionContext) {
             const PATH = condaEnvPath ? `${condaEnvPath}/bin:${process.env.PATH}` : process.env.PATH;
             const sagePath = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<string>('sagePath', 'sage');
             const filePath = editor.document.uri.fsPath;
-            const dirPath = dirname(filePath);
-            const command = `cd '${dirPath}' && ${sagePath} '${filePath}'; rm -f '${filePath}.py'`;
+            const workspacePath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
+            const dirPath = workspacePath ? workspacePath : dirname(filePath);
+            const command = `cd '${dirPath}' && ${sagePath == 'sage' ? sagePath : `${condaEnvPath}/${sagePath}`} '${filePath}'; rm -f '${filePath}.py'`;
             const terminalName = `SageMath (${condaEnvName})`;
 
             let terminal = vscode.window.terminals.find(t => t.name === terminalName);
