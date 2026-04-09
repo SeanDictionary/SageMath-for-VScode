@@ -1,11 +1,10 @@
 import * as vscode from 'vscode';
-import path, { basename, dirname } from 'path';
+import { dirname } from 'path';
 import { exec } from 'child_process';
 import {
     LanguageClient,
     LanguageClientOptions,
     ServerOptions,
-    TransportKind,
     State as ClientState
 } from 'vscode-languageclient/node';
 
@@ -33,7 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
             const sagePath = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<string>('sagePath', 'sage');
             const filePath = editor.document.uri.fsPath;
             const dirPath = dirname(filePath);
-            const command = `${sagePath} '${filePath}'; rm -f '${filePath}.py'`;
+            const command = `cd '${dirPath}' && ${sagePath} '${filePath}'; rm -f '${filePath}.py'`;
             const terminalName = `SageMath (${condaEnvName})`;
 
             let terminal = vscode.window.terminals.find(t => t.name === terminalName);
@@ -93,22 +92,12 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    async function ensureLSPStarted(): Promise<boolean> {
-        const missing = await checkRequirements();
-        if (missing.length !== 0) {
-            vscode.window.showErrorMessage(`Missing packages for LSP: ${missing.join(', ')}\n`);
-            return false;
-        }
-
-        await startLSP();
-        return true;
-    }
-
     // Command: LSP restart
-    let restartLSP = vscode.commands.registerCommand('sagemath-for-vscode.restartLSP', async () => {
+    let restartLSPCommand = vscode.commands.registerCommand('sagemath-for-vscode.restartLSP', async () => {
         const useLSP = vscode.workspace.getConfiguration('sagemath-for-vscode.LSP').get<boolean>('useSageMathLSP', true);
         if (!useLSP) {
             vscode.window.showWarningMessage('SageMath Language Server is disabled.');
+            updateLSPStatusButton('disabled');
             return;
         }
 
@@ -117,7 +106,7 @@ export function activate(context: vscode.ExtensionContext) {
                 await client.stop();
             }
 
-            const started = await ensureLSPStarted();
+            const started = await startLSP();
             if (started) {
                 vscode.window.showInformationMessage('SageMath Language Server restarted.');
             }
@@ -126,9 +115,10 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    context.subscriptions.push(runSageMathCommand);
-    context.subscriptions.push(selectCondaEnv);
-    context.subscriptions.push(restartLSP);
+    // Command: Show LSP output
+    let showLSPOutputCommand = vscode.commands.registerCommand('sagemath-for-vscode.showLSPOutput', () => {
+        lspOutputChannel.show(true);
+    });
 
     // Function: Check&Get Conda Env Path
     async function getCondaEnvPath() {
@@ -144,8 +134,20 @@ export function activate(context: vscode.ExtensionContext) {
         return condaEnvPath;
     }
 
-    // TODO: Function: Auto-clone or install Sage LSP server
-    //      Clone from https://github.com/SeanDictionary/sage-lsp or using `pip install ./sage-lsp` to install
+    async function installPackage(pkg: string[]): Promise<void> {
+        const condaEnvPath = await getCondaEnvPath();
+
+        return new Promise((resolve, reject) => {
+            const cmd = condaEnvPath ? `${condaEnvPath}/bin/pip install ${pkg.join(' ')}` : `pip install ${pkg.join(' ')}`;
+            exec(cmd, (error, stdout, stderr) => {
+                if (error) {
+                    reject(`Failed to install packages: ${stderr}`);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    }
 
     // Function: Requirements check
     async function checkRequirements(): Promise<string[]> {
@@ -183,8 +185,33 @@ export function activate(context: vscode.ExtensionContext) {
         });
     }
 
+    // Function: Stop LSP
+    async function stopLSP() {
+        if (client && client.state !== ClientState.Stopped) {
+            await client.stop();
+            updateLSPStatusButton('stopped');
+        }
+    }
+
     // Function: start LSP
-    async function startLSP() {
+    async function startLSP(): Promise<boolean> {
+        // Abort if LSP is already running
+        await stopLSP();
+
+        const useLSP = vscode.workspace.getConfiguration('sagemath-for-vscode.LSP').get<boolean>('useSageMathLSP', true);
+        if (!useLSP) {
+            vscode.window.showInformationMessage('SageMath Language Server is disabled.');
+            updateLSPStatusButton('disabled');
+            return false;
+        }
+
+        const missing = await checkRequirements();
+        if (missing.length !== 0) {
+            vscode.window.showErrorMessage(`Missing packages for LSP: ${missing.join(', ')}\n`);
+            updateLSPStatusButton('error', `Missing packages: ${missing.join(', ')}`);
+            return false;
+        }
+
         const condaEnvPath = await getCondaEnvPath();
         const command = condaEnvPath ? `${condaEnvPath}/bin/python` : 'python';
         const PATH = condaEnvPath ?`${condaEnvPath}/bin:${process.env.PATH}` : process.env.PATH;
@@ -212,20 +239,27 @@ export function activate(context: vscode.ExtensionContext) {
             clientOptions
         );
 
-        // LSP start
-        client.start();
-    }
+        client.onDidChangeState((e) => {
+            switch (e.newState) {
+                case ClientState.Starting:
+                    updateLSPStatusButton('starting');
+                    break;
+                case ClientState.Running:
+                    updateLSPStatusButton('running');
+                    break;
+                case ClientState.Stopped:
+                    updateLSPStatusButton('stopped');
+                    break;
+            }
+        });
 
-
-    const useLSP = vscode.workspace.getConfiguration('sagemath-for-vscode.LSP').get<boolean>('useSageMathLSP', true);
-    if (!useLSP) {
-        vscode.window.showInformationMessage('SageMath Language Server is disabled.');
-    }
-    else {
-        // Start LSP
-        (async () => {
-            await ensureLSPStarted();
-        })();
+        try {
+            await client.start();
+            return true;
+        } catch (error) {
+            updateLSPStatusButton('error', String(error));
+            throw error;
+        }
     }
 
     // Function: Get Conda Environments
@@ -260,18 +294,6 @@ export function activate(context: vscode.ExtensionContext) {
         });
     }
 
-    // // LSP restart button
-    // const LSPrestartButton = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    // LSPrestartButton.text = '$(sync) Restart LSP';
-    // LSPrestartButton.command = 'sagemath-for-vscode.restartLSP';
-    // LSPrestartButton.tooltip = 'SageMath for VScode: Restart SageMath LSP';
-    // context.subscriptions.push(LSPrestartButton);
-
-    // Select Conda Environment button
-    const condaEnvButton = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    condaEnvButton.command = 'sagemath-for-vscode.selectCondaEnv';
-    condaEnvButton.tooltip = 'SageMath for VScode: Select Conda Environment';
-
     // Function: Update Conda Env Button Text
     async function updateCondaEnvButton() {
         const useGlobalEnv = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<boolean>('useGlobalEnv', false);
@@ -292,31 +314,107 @@ export function activate(context: vscode.ExtensionContext) {
         }
     }
 
-    // Initialize button text
-    updateCondaEnvButton();
-
-    // Monitor configuration changes
-    context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(async (e) => {
-        if (e.affectsConfiguration('sagemath-for-vscode.sage.condaEnvPath') || e.affectsConfiguration('sagemath-for-vscode.sage.useGlobalEnv')) {
-            await updateCondaEnvButton();
+    // Function: Update LSP Status Button
+    function updateLSPStatusButton(status: 'starting' | 'running' | 'stopped' | 'disabled' | 'error', detail?: string) {
+        switch (status) {
+            case 'starting':
+                lspStatusButton.text = '$(loading~spin) LSP';
+                lspStatusButton.tooltip = 'SageMath Language Server is starting...';
+                break;
+            case 'running':
+                lspStatusButton.text = '$(check) LSP';
+                lspStatusButton.tooltip = 'SageMath Language Server is running.';
+                break;
+            case 'stopped':
+                lspStatusButton.text = '$(circle-slash) LSP';
+                lspStatusButton.tooltip = 'SageMath Language Server is stopped.';
+                break;
+            case 'disabled':
+                lspStatusButton.text = '$(debug-disconnect) LSP';
+                lspStatusButton.tooltip = 'SageMath Language Server is disabled.';
+                break;
+            case 'error':
+                lspStatusButton.text = '$(error) LSP';
+                lspStatusButton.tooltip = detail ? `SageMath Language Server error:\n${detail}` : 'SageMath Language Server failed.';
+                break;
         }
-    }));
-
-    // Monitor active editor changes
-    context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(async (editor) => {
-        if (editor && editor.document.languageId === 'sagemath') {
-            condaEnvButton.show();
-        } else {
-            condaEnvButton.hide();
-        }
-    }));
-
-    if (vscode.window.activeTextEditor &&
-        vscode.window.activeTextEditor.document.languageId === 'sagemath') {
-        condaEnvButton.show();
     }
 
+    // Monitor configuration changes
+    let configChangeMonitor = vscode.workspace.onDidChangeConfiguration(async (e) => {
+        if (e.affectsConfiguration('sagemath-for-vscode.sage.condaEnvPath') || e.affectsConfiguration('sagemath-for-vscode.sage.useGlobalEnv')) {
+            await updateCondaEnvButton();
+            if (vscode.workspace.getConfiguration('sagemath-for-vscode.LSP').get<boolean>('useSageMathLSP', true)) {
+                await vscode.commands.executeCommand('sagemath-for-vscode.restartLSP');
+            }
+        }
+        if (e.affectsConfiguration('sagemath-for-vscode.LSP.useSageMathLSP')) {
+            const useLSP = vscode.workspace.getConfiguration('sagemath-for-vscode.LSP').get<boolean>('useSageMathLSP', true);
+            if (useLSP && (!client || client.state === ClientState.Stopped)) {
+                await startLSP();
+            } else if (!useLSP && client && client.state !== ClientState.Stopped) {
+                await stopLSP();
+            }
+
+            if (!useLSP) {
+                updateLSPStatusButton('disabled');
+            }
+        }
+        if (e.affectsConfiguration('sagemath-for-vscode.LSP.LSPLogLevel')) {
+            await vscode.commands.executeCommand('sagemath-for-vscode.restartLSP');
+        }
+    })
+
+    // Monitor active editor changes
+    let editorChangeMonitor = vscode.window.onDidChangeActiveTextEditor(async (e) => {
+        if (e && e.document.languageId === 'sagemath') {
+            condaEnvButton.show();
+            lspStatusButton.show();
+        } else {
+            condaEnvButton.hide();
+            lspStatusButton.hide();
+        }
+    });
+
+    // Select Conda Environment button
+    const condaEnvButton = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    condaEnvButton.command = 'sagemath-for-vscode.selectCondaEnv';
+    condaEnvButton.tooltip = 'SageMath for VScode: Select Conda Environment';
+
+    // LSP Status button
+    const lspStatusButton = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 99);
+    lspStatusButton.command = 'sagemath-for-vscode.showLSPOutput';
+    lspStatusButton.tooltip = 'SageMath Language Server Status';
+
+    context.subscriptions.push(runSageMathCommand);
+    context.subscriptions.push(selectCondaEnv);
+    context.subscriptions.push(restartLSPCommand);
+    context.subscriptions.push(showLSPOutputCommand);
     context.subscriptions.push(condaEnvButton);
+    context.subscriptions.push(lspStatusButton);
+    context.subscriptions.push(configChangeMonitor);
+    context.subscriptions.push(editorChangeMonitor);
+
+    if (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.languageId === 'sagemath') {
+        condaEnvButton.show();
+        lspStatusButton.show();
+    }
+
+    // Initial setup
+    async function initialize() {
+        try {
+            // Initialize button text
+            await updateCondaEnvButton();
+
+            // Start LSP
+            await startLSP();
+        }
+        catch (error) {
+            vscode.window.showErrorMessage(`Failed to start SageMath Language Server: ${error}`);
+        }
+    };
+
+    initialize();
 }
 
 // LSP shutdown

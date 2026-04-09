@@ -69,6 +69,11 @@
                 "command": "sagemath-for-vscode.selectCondaEnv",
                 "title": "SageMath for VScode: Select Conda Environment",
                 "icon": "$(terminal)"
+            },
+            {
+                "command": "sagemath-for-vscode.showLSPOutput",
+                "title": "SageMath for VScode: Show SageMath LSP Output",
+                "icon": "$(output)"
             }
         ],
         "keybindings": [
@@ -81,7 +86,7 @@
         "configuration": {
             "title": "SageMath for VScode",
             "properties": {
-                "sagemath-for-vscode.sage.path": {
+                "sagemath-for-vscode.sage.sagePath": {
                     "title": "SageMath Path",
                     "type": "string",
                     "default": "./bin/sage",

@@ -1,29 +1,41 @@
 # Change Log
 
-All notable changes to the "sagemath" extension will be documented in this file.
+All notable changes to the "SageMath for VScode" extension will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased] - 2026-xx-xx
 
-### Fixed
-
-- Fix `Get Conda Eenvs Error: /bin/sh: 1: conda: not found`
-- Fix conda env select
-- Fix run command
-- Fix LSP restart
-
 ### Added
 
-- Add conda path configuration in settings, default `conda` for global. If meet wrong like `conda: not found`, please set the path to conda executable in settings.
+- Add `sagemath-for-vscode.sage.condaPath` setting so Conda can be located even when `conda` is not available on the default `PATH`
+- Add a `Global Env` option to the Conda environment picker
+- Add an LSP status item in the status bar
+- Add click-to-open access from the LSP status item to the shared `SageMath Language Server` output channel
 
-### Remove
+### Changed
 
-- Remove npm test
+- Rename the SageMath executable setting key to `sagemath-for-vscode.sage.sagePath`
+- Rework LSP lifecycle handling so start, stop, and restart follow the same control flow
+- Reuse a single LSP output channel across restarts
+- Run SageMath from the current file directory again to keep the terminal working directory correct
+
+### Fixed
+
+- Fix `conda: not found` errors by allowing a custom Conda executable path
+- Fix blocking retry behavior when `condaEnvPath` is empty
+- Fix the Conda environment selection flow, including support for keeping the previous setting when selection is cancelled
+- Fix environment display and global-environment handling in the status bar
+- Fix LSP restart behavior after environment and log-level changes
+- Fix LSP status feedback for starting, running, stopped, disabled, and error states
+
+### Removed
+
+- Remove the unused `npm test` script
 
 ## [2.0.2-beta] - 2026-02-24
 
-This version is a beta release for using python package [sage-lsp](https://pypi.org/project/sage-lsp/) to start LSP server. Same as [2.0.1]
+This version is a beta release using the Python package [sage-lsp](https://pypi.org/project/sage-lsp/) to start the LSP server. It is otherwise the same as [2.0.1].
 
 ### Added
 
