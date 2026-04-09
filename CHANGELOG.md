@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Add a `Global Env` option to the Conda environment picker
 - Add an LSP status item in the status bar
 - Add click-to-open access from the LSP status item to the shared `SageMath Language Server` output channel
+- Add click button to install missing LSP dependencies when starting the LSP server
 
 ### Changed
 

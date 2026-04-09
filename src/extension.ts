@@ -126,17 +126,15 @@ export function activate(context: vscode.ExtensionContext) {
         if (useGlobalEnv) {
             return '';
         }
-        let condaEnvPath = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<string>('condaEnvPath');
+        let condaEnvPath = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<string>('condaEnvPath', '');
         if (!condaEnvPath) {
             await vscode.commands.executeCommand('sagemath-for-vscode.selectCondaEnv');
-            condaEnvPath = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<string>('condaEnvPath');
+            condaEnvPath = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<string>('condaEnvPath', '');
         }
         return condaEnvPath;
     }
 
-    async function installPackage(pkg: string[]): Promise<void> {
-        const condaEnvPath = await getCondaEnvPath();
-
+    async function installPackage(pkg: string[], condaEnvPath: string): Promise<void> {
         return new Promise((resolve, reject) => {
             const cmd = condaEnvPath ? `${condaEnvPath}/bin/pip install ${pkg.join(' ')}` : `pip install ${pkg.join(' ')}`;
             exec(cmd, (error, stdout, stderr) => {
@@ -150,15 +148,13 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     // Function: Requirements check
-    async function checkRequirements(): Promise<string[]> {
+    async function checkRequirements(condaEnvPath: string): Promise<string[]> {
         const TARGET: string[] = [
             "sage-lsp"
         ]
 
         const missing: string[] = [];
         let checked = 0;
-
-        const condaEnvPath = await getCondaEnvPath();
 
         return new Promise((resolve, reject) => {
             TARGET.forEach((pkg) => {
@@ -205,14 +201,45 @@ export function activate(context: vscode.ExtensionContext) {
             return false;
         }
 
-        const missing = await checkRequirements();
+        const condaEnvPath = await getCondaEnvPath();
+
+        const missing = await checkRequirements(condaEnvPath);
         if (missing.length !== 0) {
-            vscode.window.showErrorMessage(`Missing packages for LSP: ${missing.join(', ')}\n`);
+            const installChoice = await vscode.window.showErrorMessage(
+                `Missing packages for LSP: ${missing.join(', ')} \nCurrent environment: ${condaEnvPath || 'Global'}`,
+                'Install',
+                'Cancel'
+            );
             updateLSPStatusButton('error', `Missing packages: ${missing.join(', ')}`);
-            return false;
+
+            if (installChoice !== 'Install') {
+                return false;
+            } else {
+                try {
+                    updateLSPStatusButton('starting');
+                    await vscode.window.withProgress(
+                        {
+                            location: vscode.ProgressLocation.Notification,
+                            title: 'Installing SageMath LSP dependencies',
+                            cancellable: false
+                        },
+                        async (progress) => {
+                            progress.report({
+                                message: `Current environment: ${condaEnvPath || 'Global'}`
+                            });
+                            await installPackage(missing, condaEnvPath);
+                        }
+                    );
+                    vscode.window.showInformationMessage(`Installed packages for LSP: ${missing.join(', ')}`);
+                } catch (error) {
+                    const detail = String(error);
+                    vscode.window.showErrorMessage(`Failed to install packages: ${detail}`);
+                    updateLSPStatusButton('error', detail);
+                    return false;
+                }
+            }
         }
 
-        const condaEnvPath = await getCondaEnvPath();
         const command = condaEnvPath ? `${condaEnvPath}/bin/python` : 'python';
         const PATH = condaEnvPath ?`${condaEnvPath}/bin:${process.env.PATH}` : process.env.PATH;
         const LogLevel = vscode.workspace.getConfiguration('sagemath-for-vscode.LSP').get<string>('LSPLogLevel', 'INFO');
@@ -263,7 +290,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     // Function: Get Conda Environments
-    function getCondaEnvs(): Promise<{ name: string; path: string }[]> {
+    async function getCondaEnvs(): Promise<{ name: string; path: string }[]> {
         return new Promise((resolve, reject) => {
             const condaPath = vscode.workspace.getConfiguration('sagemath-for-vscode.sage').get<string>('condaPath', 'conda');
             const cmd = `
