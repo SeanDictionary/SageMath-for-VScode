@@ -19,6 +19,7 @@ I wish to make it a full-featured SageMath extension, especially for SageMath's 
 -   Support hotkey for line comment and block comment
 -   Support conda environment switching
 -   Remove the generated `.py` file after running SageMath code
+-   Support Jupyter notebook (partial, more features need LSP support)
 
 Other features are supported by python package [sage-lsp](https://pypi.org/project/sage-lsp/)
 

@@ -11,6 +11,8 @@ import {
 let client: LanguageClient;
 const lspOutputChannel = vscode.window.createOutputChannel('SageMath Language Server');
 
+const LANGUAGE_ID = 'sagemath';
+
 export function activate(context: vscode.ExtensionContext) {
     console.log('SageMath for VSCode is now active!');
     // vscode.window.showInformationMessage('Activating SageMath for VSCode...');  // Test for activation
@@ -135,6 +137,7 @@ export function activate(context: vscode.ExtensionContext) {
         return condaEnvPath;
     }
 
+    // Function: Install Packages
     async function installPackage(pkg: string[], condaEnvPath: string): Promise<void> {
         return new Promise((resolve, reject) => {
             const cmd = condaEnvPath ? `${condaEnvPath}/bin/pip install ${pkg.join(' ')}` : `pip install ${pkg.join(' ')}`;
@@ -257,7 +260,10 @@ export function activate(context: vscode.ExtensionContext) {
             },
         };
         const clientOptions: LanguageClientOptions = {
-            documentSelector: [{ scheme: 'file', language: 'sagemath' }],
+            documentSelector: [
+                { scheme: 'file', language: LANGUAGE_ID },
+                { notebook: 'jupyter-notebook', language: LANGUAGE_ID },
+            ],
             outputChannel: lspOutputChannel,
         };
         client = new LanguageClient(
@@ -395,7 +401,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Monitor active editor changes
     let editorChangeMonitor = vscode.window.onDidChangeActiveTextEditor(async (e) => {
-        if (e && e.document.languageId === 'sagemath') {
+        if (e && e.document.languageId === LANGUAGE_ID) {
             condaEnvButton.show();
             lspStatusButton.show();
         } else {
@@ -423,7 +429,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(configChangeMonitor);
     context.subscriptions.push(editorChangeMonitor);
 
-    if (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.languageId === 'sagemath') {
+    if (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.languageId === LANGUAGE_ID) {
         condaEnvButton.show();
         lspStatusButton.show();
     }
