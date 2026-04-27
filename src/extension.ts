@@ -13,6 +13,8 @@ const lspOutputChannel = vscode.window.createOutputChannel('SageMath Language Se
 
 const LANGUAGE_ID = 'sagemath';
 
+let currentVersion = '0.0.0';
+
 export function activate(context: vscode.ExtensionContext) {
     console.log('SageMath for VSCode is now active!');
     // vscode.window.showInformationMessage('Activating SageMath for VSCode...');  // Test for activation
@@ -153,12 +155,11 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Function: Requirements check
     async function checkRequirements(condaEnvPath: string): Promise<string[]> {
+        const missing: string[] = [];
+        let checked = 0;
         const TARGET: string[] = [
             "sage-lsp"
         ]
-
-        const missing: string[] = [];
-        let checked = 0;
 
         return new Promise((resolve, reject) => {
             TARGET.forEach((pkg) => {
@@ -168,6 +169,11 @@ export function activate(context: vscode.ExtensionContext) {
                         checked++;
                         if (error || !stdout.includes(`Name: ${pkg}`)) {
                             missing.push(pkg);
+                        } else {
+                            const versionMatch = stdout.match(/Version:\s*(.*)/);
+                            if (versionMatch) {
+                                currentVersion = versionMatch[1].trim();
+                            }
                         }
 
                         if (checked === TARGET.length) {
@@ -182,6 +188,51 @@ export function activate(context: vscode.ExtensionContext) {
             if (TARGET.length === 0) {
                 resolve([]);
             }
+        });
+    }
+
+    // Function: Check Requirements version
+    async function checkRequirementsVersion(condaEnvPath: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const url = 'https://api.github.com/repos/SeanDictionary/sage-lsp/releases/latest';
+            const cmd = `curl -s ${url}`;
+            exec(cmd, async (error, stdout, stderr) => {
+                if (error) {
+                    reject(`Failed to fetch latest release: ${stderr}`);
+                    return;
+                }
+                
+                try {
+                    const data = JSON.parse(stdout);
+                    const latestVersion = String(data.tag_name || '').replace(/^v/, '');
+                    console.log(`Current LSP version: ${currentVersion}, Latest LSP version: ${latestVersion}`);
+                    if (currentVersion !== latestVersion) {
+                        const updateChoice = await vscode.window.showInformationMessage(
+                            `A new version of sage-lsp is available: ${latestVersion} (current: ${currentVersion}).`,
+                            'Update',
+                            'Later'
+                        );
+
+                        if (updateChoice === 'Update') {
+                            await vscode.window.withProgress(
+                                {
+                                    location: vscode.ProgressLocation.Notification,
+                                    title: 'Updating sage-lsp',
+                                    cancellable: false
+                                },
+                                async () => {
+                                    await installPackage(['--upgrade', 'sage-lsp'], condaEnvPath);
+                                }
+                            );
+                            vscode.window.showInformationMessage(`sage-lsp has been updated to ${latestVersion}.`);
+                            await vscode.commands.executeCommand('sagemath-for-vscode.restartLSP');
+                        }
+                    }
+                    resolve();
+                } catch (err) {
+                    reject(`Failed to parse latest release: ${err}`);
+                }
+            });
         });
     }
 
@@ -206,7 +257,6 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         const condaEnvPath = await getCondaEnvPath();
-
         const missing = await checkRequirements(condaEnvPath);
         if (missing.length !== 0) {
             const installChoice = await vscode.window.showErrorMessage(
@@ -243,6 +293,10 @@ export function activate(context: vscode.ExtensionContext) {
                 }
             }
         }
+
+        checkRequirementsVersion(condaEnvPath).catch(error => {
+            console.error(`Version check failed: ${error}`);
+        });
 
         const command = condaEnvPath ? `${condaEnvPath}/bin/python` : 'python';
         const PATH = condaEnvPath ?`${condaEnvPath}/bin:${process.env.PATH}` : process.env.PATH;
